@@ -1,4 +1,5 @@
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
@@ -62,6 +63,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             </Suspense>
           </CartProvider>
         </NextIntlClientProvider>
+        <Analytics />
         <AnalyticsComponents />
       </body>
     </html>
