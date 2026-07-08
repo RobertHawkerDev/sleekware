@@ -5,6 +5,7 @@ import { withFallback } from "@/lib/shopify/errors";
 import {
   addToCart,
   getCart,
+  linkCartToCustomer,
   removeFromCart,
   updateCart,
   updateCartBuyerIdentity,
@@ -12,6 +13,8 @@ import {
   updateCartNote,
 } from "@/lib/shopify/operations/cart";
 import type { Cart, CartWarning } from "@/lib/types";
+
+import { getSession } from "../auth/server";
 
 export type CartActionResult = {
   cart?: Cart;
@@ -297,6 +300,24 @@ export async function buyNowAction(
 export async function prepareCheckoutAction(): Promise<{
   checkoutUrl: string | null;
 }> {
-  const cart = await withFallback(getCart(), undefined);
+  let cart = await withFallback(getCart(), undefined);
+  const session = await getSession();
+  const customerAccessToken = session?.accessToken;
+
+  if (customerAccessToken && cart?.id) {
+    try {
+      // Authoritatively link the customer's secure token to this cart instance
+      const result = await linkCartToCustomer(customerAccessToken);
+
+      // Directly pass the fully authenticated checkout URL if returned successfully
+      if (result?.cart?.checkoutUrl) {
+        return { checkoutUrl: result.cart.checkoutUrl };
+      }
+    } catch (error) {
+      console.error("Failed to bind customer session to cart identity:", error);
+    }
+  }
+
+  // Fallback to the standard URL if no session is active
   return { checkoutUrl: cart?.checkoutUrl ?? null };
 }

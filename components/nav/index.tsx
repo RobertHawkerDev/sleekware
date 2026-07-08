@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { Container } from "@/components/ui/container";
 import { isAuthEnabled } from "@/lib/auth";
 import { navItems, siteConfig } from "@/lib/config";
+import { getMenu } from "@/lib/shopify/operations/menu";
 
 import { NavAccount, NavAccountFallback } from "./account";
 import { CartIcon, CartIconFallback } from "./cart";
@@ -11,8 +12,10 @@ import { MobileMenu } from "./mobile-menu";
 import { QuickLinks } from "./quick-links";
 import { SearchModal } from "./search-modal";
 
-export async function Nav({ locale }: { locale: string }) {
-  const items = navItems;
+export async function Nav() {
+  const menuData = await getMenu({ handle: "main-menu" });
+
+  const items = menuData?.items ?? navItems;
 
   return (
     <nav

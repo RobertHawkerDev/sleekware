@@ -35,6 +35,7 @@ function assertRequiredEnv() {
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  allowedDevOrigins: ["undrafted-fraying-edition.ngrok-free.dev"],
   images: {
     deviceSizes: [1080, 1920],
     imageSizes: [],

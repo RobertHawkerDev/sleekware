@@ -20,6 +20,13 @@ function trimTrailingSlash(url: string): string {
 }
 
 function getAuthBaseUrl(): string {
+  // 🚀 DEV HELPER: If we are running locally via `next dev`, prioritize a dedicated local environment variable
+  if (process.env.NODE_ENV === "development") {
+    const devUrl = process.env.BETTER_AUTH_DEV_URL || process.env.BETTER_AUTH_BASE_URL;
+    if (devUrl) return trimTrailingSlash(devUrl);
+  }
+
+  // --- Production & Fallback Logic ---
   const explicitUrl = process.env.BETTER_AUTH_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL;
   if (explicitUrl) return trimTrailingSlash(explicitUrl);
 
@@ -89,6 +96,10 @@ export const auth = isAuthEnabled
           enabled: true,
           maxAge: 7 * 24 * 60 * 60,
         },
+      },
+
+      advanced: {
+        trustedProxyHeaders: true,
       },
 
       account: {

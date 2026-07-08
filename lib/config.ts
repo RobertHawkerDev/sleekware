@@ -47,16 +47,16 @@ export const productMetafieldIdentifiers: Array<{ key: string; namespace: string
 
 export const navItems: MenuItem[] = [
   {
-    id: "default-nav-shop",
-    title: "Shop",
-    url: "/collections/all",
+    id: "",
+    title: "Home",
+    url: "/",
     type: "HTTP",
     items: [],
   },
   {
-    id: "default-nav-about",
-    title: "About",
-    url: "/about",
+    id: "default-nav-shop",
+    title: "Shop",
+    url: "/collections/all",
     type: "HTTP",
     items: [],
   },
