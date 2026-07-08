@@ -12,7 +12,7 @@ import { MobileMenu } from "./mobile-menu";
 import { QuickLinks } from "./quick-links";
 import { SearchModal } from "./search-modal";
 
-export async function Nav() {
+export async function Nav({ locale }: { locale: string }) {
   const menuData = await getMenu({ handle: "main-menu" });
 
   const items = menuData?.items ?? navItems;
