@@ -29,7 +29,7 @@ function MenuLink({ url, children, className }: MenuLinkProps) {
 
 export function QuickLinks({ items }: { items: MenuItem[] }) {
   return (
-    <ul className="hidden md:flex items-center gap-5">
+    <ul className="hidden lg:flex items-center gap-8">
       {items.map((item) => (
         <NavItem key={item.id} item={item} />
       ))}
@@ -37,7 +37,15 @@ export function QuickLinks({ items }: { items: MenuItem[] }) {
   );
 }
 
-const TRIGGER_CLASS = "flex items-center gap-1 text-sm hover:opacity-70 transition-opacity";
+/* Reverted to your original text layout styling.
+  Added the sliding underline animation utilizing origin-left.
+*/
+const TRIGGER_CLASS = cn(
+  "relative flex items-center gap-1 text-sm h-full py-2 transition-opacity",
+  "after:absolute after:bottom-4 after:left-0 after:h-[2px] after:w-full after:bg-black",
+  "after:scale-x-0 after:origin-left after:transition-transform after:duration-250 ease-out",
+  "hover:after:scale-x-100",
+);
 
 function NavItem({ item }: { item: MenuItem }) {
   if (item.items.length === 0) {
@@ -56,16 +64,20 @@ function NavItem({ item }: { item: MenuItem }) {
     <li className="group flex items-center h-16">
       <MenuLink url={item.url} className={TRIGGER_CLASS}>
         {item.title}
-        <ChevronDown className="size-3" aria-hidden="true" />
+        <ChevronDown
+          className="size-3 transition-transform duration-200 group-hover:rotate-180"
+          aria-hidden="true"
+        />
       </MenuLink>
+
+      {/* Dropdown Container */}
       <div
         className={cn(
           "absolute inset-x-0 top-full z-40",
           "invisible opacity-0",
           "group-hover:visible group-hover:opacity-100",
-          // :focus-visible (not :focus-within) so post-click mouse focus doesn't pin the menu open.
-          "group-has-[:focus-visible]:visible group-has-[:focus-visible]:opacity-100",
-          "transition-opacity duration-150",
+          "group-has-focus-visible:visible group-has-focus-visible:opacity-100",
+          "transition-all duration-200 ease-in-out",
           "bg-background border-b shadow-md",
         )}
       >
@@ -89,7 +101,7 @@ function NavItem({ item }: { item: MenuItem }) {
                       <li key={leaf.id}>
                         <MenuLink
                           url={leaf.url}
-                          className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+                          className="block text-base text-muted-foreground hover:text-foreground transition-colors"
                         >
                           {leaf.title}
                         </MenuLink>

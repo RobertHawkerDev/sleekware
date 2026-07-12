@@ -17,7 +17,6 @@ import { SearchModal } from "./search-modal";
 
 export async function Nav({ locale }: { locale: string }) {
   const menuData = await getMenu({ handle: "main-menu" });
-
   const items = menuData?.items ?? navItems;
 
   return (
@@ -25,22 +24,42 @@ export async function Nav({ locale }: { locale: string }) {
       <AnnouncementBar />
 
       <nav
-        className="sticky top-0 z-30 w-full bg-background pt-[env(safe-area-inset-top,0px)] transition-shadow duration-250"
+        className="sticky top-0 z-30 w-full bg-background  transition-shadow duration-250"
         id="nav-outer"
       >
-        <Container className="flex h-16 items-center gap-2.5 md:gap-5">
-          <MobileMenu items={items} />
+        {/* Added standard side padding to prevent elements from hugging screen edges */}
+        <Container className="relative flex h-18 items-center justify-between px-6">
+          {/* LEFT SIDE: Mobile Menu + Mobile Search / Desktop QuickLinks */}
+          <div className="flex items-center gap-2 sm:gap-4 z-10">
+            {/* Mobile Only: Burger Menu & Search Icon */}
+            <div className="flex items-center gap-3 lg:hidden">
+              <MobileMenu items={items} />
+              <SearchModal />
+            </div>
 
-          <Link className="flex items-center shrink-0" href="/">
-            <span className="text-xl font-semibold leading-4 tracking-tight">
-              {siteConfig.name}
-            </span>
-          </Link>
+            {/* Desktop Only: Navigation Links */}
+            <div className="hidden lg:block">
+              <QuickLinks items={items} />
+            </div>
+          </div>
 
-          <QuickLinks items={items} />
+          {/* CENTER: Logo (Permanently absolute-centered on all screen sizes) */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+            <Link className="flex items-center shrink-0 pointer-events-auto" href="/">
+              <span className="text-base font-black uppercase tracking-[0.2em] text-black">
+                {siteConfig.name}
+              </span>
+            </Link>
+          </div>
 
-          <div className="flex items-center gap-5 ml-auto">
-            <SearchModal />
+          {/* RIGHT SIDE: Action Icons */}
+          <div className="flex items-center gap-5 md:gap-8 z-10">
+            {/* Desktop Only Search */}
+            <div className="hidden lg:block">
+              <SearchModal />
+            </div>
+
+            {/* Account & Cart remain on the right across all screen sizes */}
             {isAuthEnabled && (
               <Suspense fallback={<NavAccountFallback />}>
                 <NavAccount />

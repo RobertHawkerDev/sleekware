@@ -1,6 +1,6 @@
 "use client";
 
-import { HandbagIcon } from "lucide-react";
+import { ShoppingBagIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
@@ -27,7 +27,7 @@ export function CartIconClient({ initialCart }: { initialCart: Cart | null }) {
       type="button"
     >
       <span className="relative">
-        <HandbagIcon className="size-5" />
+        <ShoppingBagIcon className="size-5" />
         {quantity > 0 && (
           <span className="absolute -top-2 -right-1 flex size-4 items-center justify-center rounded-full bg-foreground text-xxs leading-none text-background">
             {quantity}
