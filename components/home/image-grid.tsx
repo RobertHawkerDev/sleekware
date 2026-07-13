@@ -22,15 +22,14 @@ const ITEMS: GridItem[] = [
 
 export function ImageGrid() {
   return (
-    // w-full with no horizontal padding ensures it hits the viewport edges completely
     <section className="w-full overflow-hidden bg-black">
-      {/* gap-0 removes all whitespace between the columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
         {ITEMS.map((item, index) => (
           <div
             key={index}
-            // h-[50vh] on mobile stacked layout, md:h-[85vh] on desktop for massive presence
-            className="relative block w-full h-[50vh] md:h-[85vh] overflow-hidden bg-neutral-900"
+            // Replacing the unstable h-[50vh] on mobile with a static height (like h-[450px])
+            // This prevents the address bar resize from triggering an image scale jump on scroll
+            className="relative block w-full h-[450px] md:h-[85vh] overflow-hidden bg-neutral-900"
           >
             <Image
               src={item.imageSrc}
