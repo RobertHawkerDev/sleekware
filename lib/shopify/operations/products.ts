@@ -726,8 +726,19 @@ const COLLECTION_PRODUCTS_QUERY = `#graphql
           cursor
           node {
             ...ProductCardFields
+            images(first: 2) {
+              edges {
+                node {
+                  url
+                  altText
+                  width
+                  height
+                }
+              }
+            }
           }
         }
+          
         pageInfo {
           hasNextPage
           hasPreviousPage
@@ -757,11 +768,22 @@ const COLLECTION_SORT_KEY_MAP: Record<string, { sortKey: string; reverse: boolea
   COLLECTION_DEFAULT: { sortKey: "COLLECTION_DEFAULT", reverse: false },
 };
 
-type CollectionProductsResult = {
+type ProductCardImage = {
+  url: string;
+  altText: string;
+  width: number;
+  height: number;
+};
+
+type ProductCardWithImages = ProductCard & {
+  images?: ProductCardImage[];
+};
+
+export type CollectionProductsResult = {
   filters: Filter[];
   pageInfo: PageInfo;
   priceRange?: PriceRange;
-  products: ProductCard[];
+  products: ProductCardWithImages[];
 };
 
 type CollectionProductsParams = {
@@ -794,7 +816,15 @@ export async function fetchCollectionProducts(
   const response = await storefront.request<{
     collection: {
       products: {
-        edges: Array<{ node: ShopifyProductCard }>;
+        edges: Array<{
+          node: ShopifyProductCard & {
+            images?: {
+              edges: Array<{
+                node: { url: string; altText?: string; width: number; height: number };
+              }>;
+            };
+          };
+        }>;
         pageInfo: PageInfo;
         filters: ShopifyFilter[];
       };
@@ -827,16 +857,35 @@ export async function fetchCollectionProducts(
     };
   }
 
-  const shopifyProducts = data.collection.products.edges.map((edge) => edge.node);
+  // Map over the response edges to attach the raw requested images onto the transformed result payload
+  const products = data.collection.products.edges.map((edge) => {
+    const transformedCard = transformShopifyProductCard(edge.node);
 
-  const products = shopifyProducts.map(transformShopifyProductCard);
-  const transformed = transformShopifyFilters(data.collection.products.filters, { activeFilters });
+    // Safely parse out our explicit images connection block array
+    const secondaryImages =
+      edge.node.images?.edges.map((imgEdge) => ({
+        url: imgEdge.node.url,
+        altText: imgEdge.node.altText || "",
+        width: imgEdge.node.width,
+        height: imgEdge.node.height,
+      })) ?? [];
+
+    return {
+      ...transformedCard,
+      // Overwrite or append an explicit array holding our image objects sequence
+      images: secondaryImages,
+    };
+  });
+
+  const transformedFilters = transformShopifyFilters(data.collection.products.filters, {
+    activeFilters,
+  });
 
   return {
-    filters: transformed.filters,
+    filters: transformedFilters.filters,
     pageInfo: data.collection.products.pageInfo,
-    priceRange: transformed.priceRange,
-    products,
+    priceRange: transformedFilters.priceRange,
+    products, // Now contains your image assets connection payload sequence!
   };
 }
 

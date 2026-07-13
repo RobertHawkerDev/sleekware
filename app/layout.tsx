@@ -28,6 +28,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Gate analytics to only run when deployed on Vercel infra
+const isVercel = Boolean(process.env.VERCEL_ENV);
+
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const [locale, messages, t] = await Promise.all([
     getLocale(),
@@ -63,8 +66,14 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             </Suspense>
           </CartProvider>
         </NextIntlClientProvider>
-        <Analytics />
-        <AnalyticsComponents />
+
+        {/* Only render analytics scripts if we are on Vercel */}
+        {isVercel && (
+          <>
+            <Analytics />
+            <AnalyticsComponents />
+          </>
+        )}
       </body>
     </html>
   );

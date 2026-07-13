@@ -422,6 +422,21 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
     featuredImage {
       ...ImageFields
     }
+      images(first: 2) {
+      edges {
+        node {
+          url
+          altText
+          width
+          height
+        }
+      }
+    }
+      options {
+      id
+      name
+      values
+    }
     priceRange {
       minVariantPrice {
         ...MoneyFields

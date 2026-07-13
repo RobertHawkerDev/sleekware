@@ -154,6 +154,12 @@ export interface ShopifyProductCard {
   vendor: string;
   availableForSale: boolean;
   featuredImage: ShopifyImage | null;
+  images?: ShopifyEdges<ShopifyImage>;
+  options: Array<{
+    id: string;
+    name: string;
+    values: string[];
+  }>;
   priceRange: {
     minVariantPrice: ShopifyMoney;
     maxVariantPrice: ShopifyMoney;
@@ -403,6 +409,7 @@ export function transformShopifyProductCard(product: ShopifyProductCard): Produc
     handle: product.handle,
     title: product.title,
     featuredImage: transformImage(product.featuredImage),
+    options: product.options ? product.options.map(transformOption) : [],
     price: product.priceRange.minVariantPrice,
     maxPrice: product.priceRange.maxVariantPrice,
     compareAtPrice: product.compareAtPriceRange?.minVariantPrice ?? undefined,

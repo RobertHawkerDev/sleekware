@@ -88,7 +88,7 @@ function ProductCardImage({
       className={cn("relative overflow-hidden", aspectRatioClasses, className)}
     >
       {src ? (
-        <Image src={src} alt={alt} fill className="object-cover" sizes={sizes} />
+        <Image src={src} alt={alt} fill quality={80} className="object-cover" sizes={sizes} />
       ) : (
         <ImagePlaceholder className="size-full" />
       )}

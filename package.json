@@ -59,5 +59,11 @@
     "oxlint": "^1.72.0",
     "postcss": "^8.5.16",
     "typescript": "^6.0.3"
-  }
+  },
+  "browserslist": [
+    "defaults",
+    "not IE 11",
+    "not android 4.4.3-4.4.4",
+    "maintained node versions"
+  ]
 }

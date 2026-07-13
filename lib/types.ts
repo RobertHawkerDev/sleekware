@@ -48,6 +48,7 @@ export interface ProductCard {
   defaultVariantNumericId?: string;
   defaultVariantSelectedOptions?: SelectedOption[];
   featuredImage: Image | null;
+  options?: ProductOption[];
   handle: string;
   id: string;
   /** Highest variant price; equals price for single-price products, else the top of the range. */

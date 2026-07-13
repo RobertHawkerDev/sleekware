@@ -3,7 +3,7 @@ commit-msg:
   jobs:
     - name: commitlint
       run: npx commitlint --edit {1}
-      
+
 # Fast checks on every commit
 pre-commit:
   parallel: true
@@ -11,7 +11,7 @@ pre-commit:
     - name: format
       glob: "*.{js,ts,jsx,tsx,json,md}"
       run: npx oxfmt --write {staged_files} && git add {staged_files}
-    
+
     - name: lint
       glob: "*.{js,ts,jsx,tsx}"
       run: npx oxlint {staged_files}
