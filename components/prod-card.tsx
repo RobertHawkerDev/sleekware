@@ -41,7 +41,7 @@ function getTag(product: ShopifyProduct | null | undefined, tag: string) {
 export function ProductCardSkeleton() {
   return (
     <div className="flex flex-col h-full w-full pointer-events-none animate-pulse">
-      <div className="relative aspect-[4/5] w-full bg-neutral-200 rounded-none" />
+      <div className="aspect-[4/5] w-full bg-neutral-200 rounded-none" />
       <div className="mt-3 space-y-2">
         <div className="h-4 w-3/4 bg-neutral-200 rounded-none" />
         <div className="h-3.5 w-1/2 bg-neutral-200 rounded-none" />
@@ -89,16 +89,17 @@ export function ProductCard({ product, isLoading }: ProductCardProps) {
           </span>
         )}
 
-        <div className="h-full w-full relative">
+        <div className="w-full h-full">
           {primaryImage?.url ? (
             <Image
               src={primaryImage.url}
               alt={primaryImage.altText || title}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              // Removed absolute positioning and 'fill'. Now renders stably inside the aspect-ratio wrapper.
+              width={600}
+              height={750}
               quality={80}
               priority={false}
-              className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500 ${
+              className={`w-full h-full object-cover object-center transition-opacity duration-500 ${
                 hasSecondaryImage ? "group-hover:opacity-0" : ""
               }`}
             />
@@ -112,10 +113,10 @@ export function ProductCard({ product, isLoading }: ProductCardProps) {
             <Image
               src={secondaryImage!.url}
               alt={secondaryImage!.altText || title}
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              width={600}
+              height={750}
               quality={80}
-              className="absolute inset-0 h-full w-full object-cover object-center opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+              className="absolute inset-0 w-full h-full object-cover object-center opacity-0 transition-opacity duration-500 group-hover:opacity-100"
             />
           )}
         </div>

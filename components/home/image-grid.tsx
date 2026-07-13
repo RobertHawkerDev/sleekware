@@ -25,20 +25,16 @@ export function ImageGrid() {
     <section className="w-full overflow-hidden bg-black">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
         {ITEMS.map((item, index) => (
-          <div
-            key={index}
-            // Replacing the unstable h-[50vh] on mobile with a static height (like h-[450px])
-            // This prevents the address bar resize from triggering an image scale jump on scroll
-            className="relative block w-full h-[450px] md:h-[85vh] overflow-hidden bg-neutral-900"
-          >
+          <div key={index} className="w-full h-[450px] md:h-[85vh] overflow-hidden bg-neutral-900">
+            {/* Removed 'fill' entirely. Rendered as an inline block element for stable painting */}
             <Image
               src={item.imageSrc}
               alt={item.imageAlt}
-              fill
-              sizes="(max-width: 768px) 100vw, 33vw"
+              width={800}
+              height={1200}
               priority={index < 3}
               quality={70}
-              className="object-cover object-center"
+              className="w-full h-full object-cover object-center"
             />
           </div>
         ))}
