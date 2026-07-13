@@ -15,7 +15,6 @@ interface BannerSectionProps {
 export function BannerSection({ hero, headingLevel = "h1" }: BannerSectionProps) {
   const Heading = headingLevel;
 
-  // Consolidate fallback states inside the component layout context
   const headline = hero?.headline ?? "OUR NEW CATALOGUE\nJUST GOT EVEN BETTER";
   const subheadline =
     hero?.subheadline ??
@@ -35,71 +34,69 @@ export function BannerSection({ hero, headingLevel = "h1" }: BannerSectionProps)
   return (
     <section
       className={cn(
-        "relative w-full h-[70vh] sm:h-[75vh] md:h-[90vh] overflow-hidden bg-neutral-900 flex items-end pb-12 sm:pb-16 md:pb-20 lg:pb-24",
+        // Set a fixed physical height on mobile (e.g., 500px) instead of vh to stop layout shifting
+        "relative w-full h-[500px] sm:h-[600px] md:h-[80vh] overflow-hidden bg-neutral-900 flex items-end pb-12 sm:pb-16 md:pb-20 lg:pb-24",
       )}
     >
-      {/* Background Media - Fluid responsive scaling keeps right-side subject nicely cropped */}
-      {video ? (
-        <AutoPlayVideo
-          src={video.url}
-          previewImage={
-            video.previewImage
-              ? {
-                  src: video.previewImage.url,
-                  alt: video.previewImage.alt,
-                }
-              : null
-          }
-          className="absolute inset-0 h-full w-full object-cover object-[70%_center] md:object-[75%_center] scale-125 md:scale-[1.45] transform transition-transform duration-500"
-          priorityImage
-          sizes="100vw"
-        />
-      ) : isStatic ? (
-        <Image
-          src={image as StaticImageData}
-          alt={headline || "Hero background"}
-          fill
-          className="object-cover object-[70%_center] md:object-[75%_center] scale-125 md:scale-[1.25] transform transition-transform duration-500"
-          placeholder="blur"
-          priority
-          sizes="100vw"
-        />
-      ) : image ? (
-        <Image
-          src={(image as { url: string }).url}
-          alt={(image as { alt: string }).alt || headline}
-          fill
-          className="object-cover object-[70%_center] md:object-[75%_center] scale-125 md:scale-[1.25] transform transition-transform duration-500"
-          priority
-          sizes="100vw"
-        />
-      ) : null}
+      {/* Background Media Container - Standard block display to prevent floating layout shifts */}
+      <div className="absolute inset-0 w-full h-full z-0 select-none pointer-events-none">
+        {video ? (
+          <AutoPlayVideo
+            src={video.url}
+            previewImage={
+              video.previewImage
+                ? {
+                    src: video.previewImage.url,
+                    alt: video.previewImage.alt,
+                  }
+                : null
+            }
+            className="w-full h-full object-cover object-[70%_center] md:object-[75%_center]"
+            priorityImage
+            sizes="100vw"
+          />
+        ) : isStatic ? (
+          <Image
+            src={image as StaticImageData}
+            alt={headline || "Hero background"}
+            width={1200}
+            height={800}
+            className="w-full h-full object-cover object-[70%_center] md:object-[75%_center]"
+            placeholder="blur"
+            priority
+          />
+        ) : image ? (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={(image as { url: string }).url}
+            alt={(image as { alt: string }).alt || headline}
+            className="w-full h-full object-cover object-[70%_center] md:object-[75%_center]"
+          />
+        ) : null}
+      </div>
 
-      {/* Cross-device legibility overlays (mixes uniform darkening with a bottom-to-top gradient) */}
+      {/* Static overlays */}
       {hasMedia && (
         <>
-          <div className="absolute inset-0 bg-black/20 z-0" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-0" />
-          <div className="absolute inset-0 hidden md:block bg-gradient-to-r from-black/40 via-transparent to-transparent z-0" />
+          <div className="absolute inset-0 bg-black/20 z-0 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-0 pointer-events-none" />
+          <div className="absolute inset-0 hidden md:block bg-gradient-to-r from-black/40 via-transparent to-transparent z-0 pointer-events-none" />
         </>
       )}
 
-      {/* Content Layout Container - Aligned precisely with header structural bounds */}
+      {/* Content Layout Container */}
       <div className="relative w-full max-w-8xl mx-auto px-6 sm:px-8 z-10 pointer-events-none">
         <div className="max-w-xs sm:max-w-md md:max-w-xl space-y-4 md:space-y-5 pointer-events-auto text-left text-white">
-          {/* Main Title - Tightened text leading block lines */}
           <Heading className="text-2xl sm:text-4xl xl:text-5xl font-black uppercase tracking-tighter leading-[1.2] whitespace-pre-line">
             {headline}
           </Heading>
 
-          {/* Subheadline Copy */}
           {subheadline && (
             <p className="text-sm sm:text-base md:text-lg font-medium text-neutral-200 max-w-sm md:max-w-md leading-relaxed drop-shadow-sm">
               {subheadline}
             </p>
           )}
 
-          {/* Call to Action Button - Standardized, clean size profile */}
           {ctaText && ctaLink && (
             <div className="pt-1 md:pt-2">
               <Button
