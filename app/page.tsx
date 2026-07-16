@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
+import { BannerSection } from "@/components/home/banner-section";
 import CollectionsMenu from "@/components/home/collections-menu";
 import { ImageGrid } from "@/components/home/image-grid";
-import { ProductsSlider } from "@/components/prod-slider";
-import { BannerSection } from "@/components/sections/banner-section";
+import { ProductsSlider } from "@/components/home/product-slider";
 import { Page } from "@/components/ui/page";
 import { Sections } from "@/components/ui/sections";
 import { siteConfig } from "@/lib/config";

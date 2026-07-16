@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import type { CollectionProductsResult } from "@/lib/shopify/operations/products";
 
-import { ProductCard, ProductCardSkeleton } from "./prod-card";
+import { ProductCard, ProductCardSkeleton } from "./product-card";
 
 interface ProductsSliderProps {
   title: string;
