@@ -125,12 +125,9 @@ function PaymentBadges() {
           <span className="w-3.5 h-3.5 rounded-full bg-[#F79E1B] opacity-90 -ml-2.5" />
         </div>
       </div>
-      {/* PayPal */}
-      <div className={badgeCls}>
-        <span className="text-[13px] font-extrabold italic tracking-tighter">
-          <span className="text-[#003087]">P</span>
-          <span className="text-[#0079C1] -ml-0.5">P</span>
-        </span>
+      {/* Klarna */}
+      <div className={`${badgeCls} bg-[#FFB3C7] border-none`}>
+        <span className="text-[11px] font-black text-black tracking-tight">klarna.</span>
       </div>
       {/* Shop Pay */}
       <div className={badgeCls}>
