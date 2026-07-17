@@ -1,5 +1,17 @@
 export type ShopifyEdges<T> = { edges: Array<{ node: T }> };
 
+export function encodeOrderId(gid: string) {
+  return Buffer.from(gid, "utf-8").toString("base64url");
+}
+
+export function decodeOrderId(encoded: string): string | null {
+  try {
+    return Buffer.from(decodeURIComponent(encoded), "base64url").toString("utf-8");
+  } catch {
+    return null;
+  }
+}
+
 export function flattenEdges<T>(connection: ShopifyEdges<T>): T[] {
   return connection.edges.map((edge) => edge.node);
 }

@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { defaultLocale } from "@/lib/i18n";
 import { getCustomerOrder } from "@/lib/shopify/operations/customer";
+import { decodeOrderId } from "@/lib/shopify/utils";
 import type { Money, OrderLineItem } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
 
@@ -30,27 +31,37 @@ async function OrderDetailContent({ params }: { params: Promise<{ id: string }> 
 
   if (!id) notFound();
 
-  const order = await getCustomerOrder(id);
+  const decoded = decodeOrderId(id);
+  if (!decoded) notFound();
+
+  const orderGid = decoded.startsWith("gid://") ? decoded : `gid://shopify/Order/${decoded}`;
+
+  let order;
+  try {
+    order = await getCustomerOrder(orderGid);
+  } catch {
+    notFound();
+  }
   if (!order) notFound();
 
   return (
     <>
       <AccountPageHeader title={order.name} description={formatOrderDate(order.processedAt)} />
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 mb-4">
         <OrderStatusBadge status={order.fulfillmentStatus} />
         {order.financialStatus ? (
           <Badge variant="outline">{humanizeStatus(order.financialStatus)}</Badge>
         ) : null}
       </div>
 
-      <ul className="grid divide-y rounded-lg border">
+      <ul className="grid divide-y rounded-lg border mb-4">
         {order.lineItems.map((item, index) => (
           <OrderLineItemRow key={index} item={item} />
         ))}
       </ul>
 
-      <dl className="grid gap-2 rounded-lg border p-4 text-sm">
+      <dl className="grid gap-2 rounded-lg border p-4 text-sm mb-4">
         <SummaryRow label={t("subtotal")} money={order.subtotal} />
         <SummaryRow label={t("shipping")} money={order.totalShipping} />
         <SummaryRow label={t("tax")} money={order.totalTax} />
@@ -67,7 +78,7 @@ async function OrderDetailContent({ params }: { params: Promise<{ id: string }> 
       </dl>
 
       {order.shippingAddress && order.shippingAddress.formatted.length > 0 ? (
-        <div className="grid gap-2 rounded-lg border p-4">
+        <div className="grid gap-2 rounded-lg border p-4 mb-4">
           <h2 className="text-sm font-medium">{t("shippingAddress")}</h2>
           <address className="text-sm text-muted-foreground not-italic">
             {order.shippingAddress.formatted.map((line, index) => (

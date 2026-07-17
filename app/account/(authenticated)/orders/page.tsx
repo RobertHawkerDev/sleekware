@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { defaultLocale } from "@/lib/i18n";
 import { getCustomerOrders } from "@/lib/shopify/operations/customer";
+import { encodeOrderId } from "@/lib/shopify/utils";
 import { formatPrice } from "@/lib/utils";
 
 export default async function OrdersPage({
@@ -49,31 +50,35 @@ async function OrdersContent({
   return (
     <div className="grid gap-4">
       <ul className="grid gap-3">
-        {orders.map((order) => (
-          <li key={order.id}>
-            <Link
-              href={`/account/orders/${encodeURIComponent(order.id)}`}
-              className="flex items-center justify-between gap-4 rounded-lg border p-4 transition-colors hover:bg-accent"
-            >
-              <div className="grid gap-1">
-                <span className="font-medium">{order.name}</span>
-                <span className="text-xs text-muted-foreground">
-                  {formatOrderDate(order.processedAt)}
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <OrderStatusBadge status={order.fulfillmentStatus} />
-                <span className="text-sm tabular-nums">
-                  {formatPrice(
-                    Number(order.totalPrice.amount),
-                    order.totalPrice.currencyCode,
-                    defaultLocale,
-                  )}
-                </span>
-              </div>
-            </Link>
-          </li>
-        ))}
+        {orders.map((order) => {
+          const numericId = encodeOrderId(order.id);
+
+          return (
+            <li key={order.id}>
+              <Link
+                href={`/account/orders/${numericId}`}
+                className="flex items-center justify-between gap-4 rounded-lg border p-4 transition-colors hover:bg-accent"
+              >
+                <div className="grid gap-1">
+                  <span className="font-medium">{order.name}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {formatOrderDate(order.processedAt)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <OrderStatusBadge status={order.fulfillmentStatus} />
+                  <span className="text-sm tabular-nums">
+                    {formatPrice(
+                      Number(order.totalPrice.amount),
+                      order.totalPrice.currencyCode,
+                      defaultLocale,
+                    )}
+                  </span>
+                </div>
+              </Link>
+            </li>
+          );
+        })}
       </ul>
 
       {pageInfo.hasNextPage || pageInfo.hasPreviousPage ? (
