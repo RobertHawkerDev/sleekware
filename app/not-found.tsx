@@ -8,19 +8,28 @@ export default async function NotFoundError() {
   const t = await getTranslations("common");
 
   return (
-    <Page className="flex flex-1 flex-col">
-      <Container className="flex flex-1 flex-col items-center justify-center text-center">
-        <div className="flex flex-col items-center text-center gap-2.5">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight">
+    <Page className="flex flex-1 flex-col bg-white">
+      <Container className="flex flex-1 flex-col items-center justify-center text-center py-12 md:py-24">
+        <div className="flex flex-col items-center text-center gap-4 max-w-xl mx-auto px-6 sm:px-8">
+          {/* Brand-consistent Heavy Typography */}
+          <h1 className="text-2xl sm:text-4xl xl:text-5xl font-black uppercase tracking-tighter leading-[1.2] text-black">
             {t("notFound")}
           </h1>
-          <p className="text-sm md:text-base text-muted-foreground max-w-xl">{t("notFoundDesc")}</p>
-          <Link
-            href="/search"
-            className="inline-flex items-center justify-center h-12 px-8 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            {t("continueShopping")}
-          </Link>
+
+          {/* Flat Descriptive Body Copy */}
+          <p className="text-sm sm:text-base font-medium text-neutral-500 max-w-sm md:max-w-md leading-relaxed normal-case">
+            {t("notFoundDesc")}
+          </p>
+
+          {/* Replicated Hero Action Button Styling */}
+          <div className="pt-2 md:pt-4">
+            <Link
+              href="/search"
+              className="h-auto inline-flex items-center justify-center bg-black text-white font-black px-6 py-3 md:px-8 md:py-3.5 rounded-none hover:bg-neutral-800 active:scale-[0.98] transition-all text-xs md:text-sm uppercase tracking-wider border-none shadow-md"
+            >
+              {t("continueShopping")}
+            </Link>
+          </div>
         </div>
       </Container>
     </Page>
