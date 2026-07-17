@@ -26,10 +26,10 @@ async function AddressesContent() {
 
 function AddressesSkeleton() {
   return (
-    <div className="grid gap-3">
-      <Skeleton className="h-9 w-32 rounded-lg" />
-      <Skeleton className="h-28 w-full rounded-lg" />
-      <Skeleton className="h-28 w-full rounded-lg" />
+    <div className="grid gap-4">
+      <Skeleton className="h-11 w-32 rounded-none bg-neutral-200" />
+      <Skeleton className="h-32 w-full rounded-none bg-neutral-100" />
+      <Skeleton className="h-32 w-full rounded-none bg-neutral-100" />
     </div>
   );
 }

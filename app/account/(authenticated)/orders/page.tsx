@@ -41,14 +41,14 @@ async function OrdersContent({
 
   if (orders.length === 0) {
     return (
-      <div className="rounded-lg border p-6 text-center">
-        <p className="text-sm text-muted-foreground">{t("noOrders")}</p>
+      <div className="rounded-none border border-neutral-200 p-8 text-center bg-neutral-50">
+        <p className="text-sm font-medium text-neutral-500">{t("noOrders")}</p>
       </div>
     );
   }
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-6">
       <ul className="grid gap-3">
         {orders.map((order) => {
           const numericId = encodeOrderId(order.id);
@@ -57,17 +57,19 @@ async function OrdersContent({
             <li key={order.id}>
               <Link
                 href={`/account/orders/${numericId}`}
-                className="flex items-center justify-between gap-4 rounded-lg border p-4 transition-colors hover:bg-accent"
+                className="group flex items-center justify-between gap-4 rounded-none border border-neutral-200 p-4 transition-all bg-white hover:border-black"
               >
-                <div className="grid gap-1">
-                  <span className="font-medium">{order.name}</span>
-                  <span className="text-xs text-muted-foreground">
+                <div className="grid gap-0.5">
+                  <span className="text-sm font-black uppercase tracking-wider text-black group-hover:text-neutral-700 transition-colors">
+                    {order.name}
+                  </span>
+                  <span className="text-xs font-medium text-neutral-500 normal-case">
                     {formatOrderDate(order.processedAt)}
                   </span>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                   <OrderStatusBadge status={order.fulfillmentStatus} />
-                  <span className="text-sm tabular-nums">
+                  <span className="text-sm font-bold text-black tabular-nums">
                     {formatPrice(
                       Number(order.totalPrice.amount),
                       order.totalPrice.currencyCode,
@@ -82,10 +84,13 @@ async function OrdersContent({
       </ul>
 
       {pageInfo.hasNextPage || pageInfo.hasPreviousPage ? (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pt-2">
           {pageInfo.hasPreviousPage && pageInfo.startCursor ? (
-            <Button asChild variant="outline" size="sm">
-              <Link href={`/account/orders?before=${encodeURIComponent(pageInfo.startCursor)}`}>
+            <Button asChild>
+              <Link
+                href={`/account/orders?before=${encodeURIComponent(pageInfo.startCursor)}`}
+                className="h-auto inline-flex items-center justify-center bg-white border border-neutral-200 text-black font-black px-5 py-2.5 rounded-none hover:bg-neutral-50 active:scale-[0.98] transition-all text-xs uppercase tracking-wider shadow-sm"
+              >
                 {t("newerOrders")}
               </Link>
             </Button>
@@ -93,8 +98,11 @@ async function OrdersContent({
             <span />
           )}
           {pageInfo.hasNextPage && pageInfo.endCursor ? (
-            <Button asChild variant="outline" size="sm">
-              <Link href={`/account/orders?after=${encodeURIComponent(pageInfo.endCursor)}`}>
+            <Button asChild>
+              <Link
+                href={`/account/orders?after=${encodeURIComponent(pageInfo.endCursor)}`}
+                className="h-auto inline-flex items-center justify-center bg-white border border-neutral-200 text-black font-black px-5 py-2.5 rounded-none hover:bg-neutral-50 active:scale-[0.98] transition-all text-xs uppercase tracking-wider shadow-sm"
+              >
                 {t("olderOrders")}
               </Link>
             </Button>
@@ -111,7 +119,7 @@ function OrdersSkeleton() {
   return (
     <div className="grid gap-3">
       {Array.from({ length: 4 }).map((_, index) => (
-        <Skeleton key={index} className="h-[4.5rem] w-full rounded-lg" />
+        <Skeleton key={index} className="h-20 w-full rounded-none bg-neutral-100" />
       ))}
     </div>
   );

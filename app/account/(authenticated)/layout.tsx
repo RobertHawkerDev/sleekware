@@ -23,10 +23,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
   return (
-    <Page className="flex flex-1 flex-col">
-      <Container className="flex flex-1 flex-col gap-6 md:flex-row md:gap-10">
-        <aside className="hidden w-52 shrink-0 md:block">
-          <div className="sticky top-24 flex flex-col gap-6">
+    <Page className="flex flex-1 flex-col bg-white">
+      <Container className="flex flex-1 flex-col gap-8 md:flex-row md:gap-12 py-6 md:py-12 max-w-8xl mx-auto px-6 sm:px-8">
+        <aside className="hidden w-56 shrink-0 md:block border-r border-neutral-100 pr-6">
+          <div className="sticky top-28 flex flex-col gap-6">
             <Suspense fallback={<UserInfoSkeleton />}>
               <UserInfo />
             </Suspense>
@@ -47,7 +47,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           <Suspense>
             <AccountMobileTabs />
           </Suspense>
-          <Sections className="gap-5 pt-6 md:pt-0">
+          <Sections className="gap-6 pt-6 md:pt-0">
             <Suspense>
               <AccountGate>{children}</AccountGate>
             </Suspense>
@@ -69,18 +69,20 @@ async function UserInfo() {
   const session = await requireCustomerSession();
 
   return (
-    <div>
-      <p className="text-sm font-medium">{session.firstName || session.email}</p>
-      <p className="text-xs text-muted-foreground">{session.email}</p>
+    <div className="space-y-0.5">
+      <p className="text-sm font-black uppercase tracking-wider text-black">
+        {session.firstName || session.email}
+      </p>
+      <p className="text-xs font-medium text-neutral-500 normal-case">{session.email}</p>
     </div>
   );
 }
 
 function UserInfoSkeleton() {
   return (
-    <div className="space-y-1.5">
-      <Skeleton className="h-4 w-24" />
-      <Skeleton className="h-3 w-32" />
+    <div className="space-y-2">
+      <Skeleton className="h-4 w-24 rounded-none bg-neutral-200" />
+      <Skeleton className="h-3 w-32 rounded-none bg-neutral-100" />
     </div>
   );
 }
@@ -88,9 +90,9 @@ function UserInfoSkeleton() {
 function SidebarSkeleton() {
   return (
     <div className="flex flex-col gap-1">
-      <Skeleton className="h-9 w-full rounded-lg" />
-      <Skeleton className="h-9 w-full rounded-lg" />
-      <Skeleton className="h-9 w-full rounded-lg" />
+      <Skeleton className="h-10 w-full rounded-none bg-neutral-100" />
+      <Skeleton className="h-10 w-full rounded-none bg-neutral-100" />
+      <Skeleton className="h-10 w-full rounded-none bg-neutral-100" />
     </div>
   );
 }

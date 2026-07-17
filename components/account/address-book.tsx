@@ -4,7 +4,6 @@ import { Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -52,24 +51,30 @@ export function AddressBook({ addresses }: { addresses: CustomerAddress[] }) {
   const [deleteTarget, setDeleteTarget] = useState<CustomerAddress | null>(null);
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-6">
       <div>
-        <Button size="sm" onClick={() => setFormState({ mode: "create" })}>
-          <Plus aria-hidden="true" />
+        <Button
+          onClick={() => setFormState({ mode: "create" })}
+          className="h-auto inline-flex items-center justify-center bg-black text-white font-black px-5 py-3 rounded-none hover:bg-neutral-800 active:scale-[0.98] transition-all text-xs uppercase tracking-wider gap-2 shadow-md"
+        >
+          <Plus className="size-3.5 stroke-[3]" aria-hidden="true" />
           {t("addAddress")}
         </Button>
       </div>
 
       {addresses.length === 0 ? (
-        <div className="rounded-lg border p-6 text-center">
-          <p className="text-sm text-muted-foreground">{t("noAddresses")}</p>
+        <div className="rounded-none border border-neutral-200 p-8 text-center bg-neutral-50">
+          <p className="text-sm font-medium text-neutral-500">{t("noAddresses")}</p>
         </div>
       ) : (
-        <ul className="grid gap-3 sm:grid-cols-2">
+        <ul className="grid gap-4 sm:grid-cols-2">
           {addresses.map((address) => (
-            <li key={address.id} className="flex flex-col gap-3 rounded-lg border p-4">
-              <div className="flex items-start justify-between gap-2">
-                <address className="text-sm text-muted-foreground not-italic">
+            <li
+              key={address.id}
+              className="flex flex-col gap-4 rounded-none border border-neutral-200 p-5 bg-white"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <address className="text-sm font-medium text-neutral-700 leading-relaxed not-italic normal-case">
                   {address.formatted.map((line, index) => (
                     <span key={index} className="block">
                       {line}
@@ -77,20 +82,24 @@ export function AddressBook({ addresses }: { addresses: CustomerAddress[] }) {
                   ))}
                 </address>
                 {address.isDefault ? (
-                  <Badge variant="secondary">{t("defaultAddress")}</Badge>
+                  <span className="inline-flex items-center justify-center px-2 py-0.5 bg-neutral-100 border border-neutral-200 text-[10px] font-black uppercase tracking-wider text-neutral-600 rounded-none">
+                    {t("defaultAddress")}
+                  </span>
                 ) : null}
               </div>
-              <div className="mt-auto flex gap-2">
+              <div className="mt-auto flex gap-2 pt-2 border-t border-neutral-50">
                 <Button
-                  size="sm"
-                  variant="outline"
                   onClick={() => setFormState({ address, mode: "edit" })}
+                  className="h-auto inline-flex items-center justify-center bg-neutral-100 text-black font-bold px-4 py-2 rounded-none hover:bg-neutral-200 active:scale-[0.98] transition-all text-xs uppercase tracking-wider gap-1.5"
                 >
-                  <Pencil aria-hidden="true" />
+                  <Pencil className="size-3 stroke-[2.5]" aria-hidden="true" />
                   {t("edit")}
                 </Button>
-                <Button size="sm" variant="ghost" onClick={() => setDeleteTarget(address)}>
-                  <Trash2 aria-hidden="true" />
+                <Button
+                  onClick={() => setDeleteTarget(address)}
+                  className="h-auto inline-flex items-center justify-center bg-transparent text-neutral-500 font-bold px-3 py-2 rounded-none hover:bg-neutral-50 hover:text-red-600 active:scale-[0.98] transition-all text-xs uppercase tracking-wider gap-1.5"
+                >
+                  <Trash2 className="size-3 stroke-[2.5]" aria-hidden="true" />
                   {t("delete")}
                 </Button>
               </div>
@@ -100,9 +109,9 @@ export function AddressBook({ addresses }: { addresses: CustomerAddress[] }) {
       )}
 
       <Dialog open={formState !== null} onOpenChange={(open) => !open && setFormState(null)}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
-          <DialogHeader>
-            <DialogTitle>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl rounded-none border border-neutral-200 bg-white p-6 shadow-xl">
+          <DialogHeader className="mb-4">
+            <DialogTitle className="text-lg font-black uppercase tracking-tighter text-black">
               {formState?.mode === "edit" ? t("editAddress") : t("addAddress")}
             </DialogTitle>
           </DialogHeader>
@@ -151,7 +160,7 @@ function AddressForm({ address, onSuccess }: { address?: CustomerAddress; onSucc
   };
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-4">
+    <form onSubmit={handleSubmit} className="grid gap-5">
       <div className="grid gap-4 sm:grid-cols-2">
         {TEXT_FIELDS.map((field) => {
           const fieldError = fieldErrors[field.key];
@@ -160,9 +169,17 @@ function AddressForm({ address, onSuccess }: { address?: CustomerAddress; onSucc
               key={field.key}
               className={field.span ? "grid gap-1.5 sm:col-span-2" : "grid gap-1.5"}
             >
-              <Label htmlFor={field.key}>
+              <Label
+                htmlFor={field.key}
+                className="text-xs font-black uppercase tracking-wider text-black"
+              >
                 {t(field.labelKey)}
-                {REQUIRED_FIELDS.has(field.key) ? <span aria-hidden="true"> *</span> : null}
+                {REQUIRED_FIELDS.has(field.key) ? (
+                  <span className="text-red-600" aria-hidden="true">
+                    {" "}
+                    *
+                  </span>
+                ) : null}
               </Label>
               <Input
                 id={field.key}
@@ -181,9 +198,10 @@ function AddressForm({ address, onSuccess }: { address?: CustomerAddress; onSucc
                       ? t("addressZonePlaceholder")
                       : undefined
                 }
+                className="h-11 rounded-none border-neutral-200 bg-white px-3 text-sm focus-visible:ring-0 focus-visible:border-black transition-colors placeholder:text-neutral-300"
               />
               {fieldError ? (
-                <p role="alert" className="text-xs text-destructive">
+                <p role="alert" className="text-xs font-bold uppercase tracking-wide text-red-600">
                   {fieldError}
                 </p>
               ) : null}
@@ -192,24 +210,34 @@ function AddressForm({ address, onSuccess }: { address?: CustomerAddress; onSucc
         })}
       </div>
 
-      <div className="flex items-center justify-between rounded-lg border p-3">
-        <Label htmlFor="isDefault">{t("setAsDefault")}</Label>
+      <div className="flex items-center justify-between rounded-none border border-neutral-200 p-4 bg-neutral-50">
+        <Label
+          htmlFor="isDefault"
+          className="text-xs font-black uppercase tracking-wider text-black cursor-pointer"
+        >
+          {t("setAsDefault")}
+        </Label>
         <Switch
           id="isDefault"
           checked={isDefault}
           disabled={isCurrentDefault}
           onCheckedChange={setIsDefault}
+          className="data-[state=checked]:bg-black rounded-full"
         />
       </div>
 
       {error ? (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="text-xs font-bold uppercase tracking-wide text-red-600">
           {error}
         </p>
       ) : null}
 
-      <DialogFooter>
-        <Button type="submit" disabled={isPending}>
+      <DialogFooter className="pt-2">
+        <Button
+          type="submit"
+          disabled={isPending}
+          className="h-auto w-full sm:w-auto inline-flex items-center justify-center bg-black text-white font-black px-8 py-3.5 rounded-none hover:bg-neutral-800 active:scale-[0.98] transition-all text-xs uppercase tracking-wider shadow-md disabled:opacity-50"
+        >
           {isPending ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : t("save")}
         </Button>
       </DialogFooter>
@@ -243,21 +271,34 @@ function DeleteDialog({
 
   return (
     <Dialog open={target !== null} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent>
+      <DialogContent className="rounded-none border border-neutral-200 bg-white p-6 shadow-xl">
         <DialogHeader>
-          <DialogTitle>{t("deleteAddressTitle")}</DialogTitle>
-          <DialogDescription>{t("deleteAddressConfirm")}</DialogDescription>
+          <DialogTitle className="text-lg font-black uppercase tracking-tighter text-black">
+            {t("deleteAddressTitle")}
+          </DialogTitle>
+          <DialogDescription className="text-sm font-medium text-neutral-500 mt-1">
+            {t("deleteAddressConfirm")}
+          </DialogDescription>
         </DialogHeader>
         {error ? (
-          <p role="alert" className="text-sm text-destructive">
+          <p role="alert" className="text-xs font-bold uppercase tracking-wide text-red-600">
             {error}
           </p>
         ) : null}
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={isPending}>
+        <DialogFooter className="gap-2 sm:gap-0">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            disabled={isPending}
+            className="h-auto inline-flex items-center justify-center bg-white border border-neutral-200 text-black font-black px-6 py-3 rounded-none hover:bg-neutral-50 active:scale-[0.98] transition-all text-xs uppercase tracking-wider"
+          >
             {t("cancel")}
           </Button>
-          <Button variant="destructive" onClick={handleDelete} disabled={isPending}>
+          <Button
+            onClick={handleDelete}
+            disabled={isPending}
+            className="h-auto inline-flex items-center justify-center bg-red-600 text-white font-black px-6 py-3 rounded-none hover:bg-red-700 active:scale-[0.98] transition-all text-xs uppercase tracking-wider shadow-md"
+          >
             {isPending ? (
               <Loader2 className="size-4 animate-spin" aria-hidden="true" />
             ) : (

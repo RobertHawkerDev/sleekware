@@ -14,16 +14,16 @@ export function MobileTabsClient({ tabs }: { tabs: AccountTab[] }) {
   const pathname = usePathname();
 
   return (
-    <div className="flex gap-1 border-b md:hidden">
+    <div className="flex gap-0 border-b border-neutral-200 md:hidden">
       {tabs.map((tab) => (
         <Link
           key={tab.href}
           href={tab.href}
           className={cn(
-            "flex-1 px-3 py-2.5 text-center text-sm transition-colors",
+            "flex-1 px-2 py-3 text-center text-xs font-black uppercase tracking-wider transition-all",
             pathname.startsWith(tab.href)
-              ? "border-b-2 border-foreground font-medium text-foreground"
-              : "text-muted-foreground hover:text-foreground",
+              ? "border-b-2 border-black text-black"
+              : "text-neutral-400 border-b-2 border-transparent hover:text-black",
           )}
         >
           {tab.label}
