@@ -12,8 +12,8 @@ function CartCountBadge() {
   const count = cartWithPending?.totalQuantity ?? 0;
   if (count === 0) return null;
   return (
-    <span className="flex size-5 items-center justify-center rounded-full bg-foreground text-xs text-background">
-      {count}
+    <span className="text-sm font-black text-neutral-400 tracking-tight tabular-nums self-baseline">
+      ({count})
     </span>
   );
 }
@@ -28,13 +28,24 @@ export function CartOverlay({ locale }: CartOverlayProps) {
 
   return (
     <Sheet open={isOverlayOpen} onOpenChange={setOverlayOpen}>
-      <SheetContent side="right" className="p-0 gap-0">
-        <div className="flex h-16 shrink-0 items-center gap-2 px-5">
-          <SheetTitle className="text-lg font-semibold">{t("shoppingCart")}</SheetTitle>
+      <SheetContent
+        side="right"
+        className="p-0 gap-0 rounded-none border-l border-neutral-200 bg-white"
+      >
+        {/* Fixed Title Header Block with Padding */}
+        <div className="flex h-16 w-full items-center gap-2 px-6 pt-5 pb-4 border-b border-neutral-200 bg-white">
+          <SheetTitle className="text-sm font-black uppercase tracking-widest text-black leading-none">
+            {t("shoppingCart")}
+          </SheetTitle>
           <CartCountBadge />
         </div>
+
         <SheetDescription className="sr-only">{t("reviewCartDescription")}</SheetDescription>
-        <OverlayContent locale={locale} />
+
+        {/* Content Section */}
+        <div className="h-[calc(100%-4rem)] overflow-hidden">
+          <OverlayContent locale={locale} />
+        </div>
       </SheetContent>
     </Sheet>
   );
