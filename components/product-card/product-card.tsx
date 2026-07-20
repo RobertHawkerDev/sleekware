@@ -29,7 +29,7 @@ export interface ProductCardProps {
 export async function ProductCard({
   product,
   locale,
-  aspectRatio = "square",
+  aspectRatio = "portrait",
   variant = "default",
   outOfStockText,
   sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw",
@@ -38,17 +38,29 @@ export async function ProductCard({
   const isFeatured = variant === "featured";
   const t = isFeatured ? await getTranslations("product") : null;
 
+  // Safely check for "new" tag via an optional type cast to prevent TS compilation errors
+  const productWithTags = product as ProductCardType & { tags?: string[] };
+  const isNew = productWithTags.tags?.some((tag) => tag?.toLowerCase() === "new") ?? false;
+
   return (
     <Link href={`/products/${product.handle}`} className={className}>
       <ProductCardRoot variant={variant}>
-        {isFeatured && t && (
-          <ProductCardBadge>
-            <span className="inline-flex self-start items-center pl-2 pr-5 py-0.5 bg-primary rounded-tl-lg not-supports-[clip-path:shape(from_0_0)]:rounded-tr-lg clip-featured-badge text-xs text-primary-foreground font-medium">
-              {t("featuredBadge")}
-            </span>
-          </ProductCardBadge>
-        )}
         <ProductCardImageContainer variant={variant}>
+          {isFeatured && t && (
+            <ProductCardBadge className="absolute bottom-3 left-3 z-20">
+              <span className="bg-black px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white rounded-none">
+                {t("featuredBadge")}
+              </span>
+            </ProductCardBadge>
+          )}
+          {!isFeatured && isNew && (
+            <ProductCardBadge className="absolute bottom-3 left-3 z-20">
+              <span className="bg-black px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white rounded-none">
+                New
+              </span>
+            </ProductCardBadge>
+          )}
+
           <ProductCardImage
             src={product.featuredImage?.url}
             alt={product.featuredImage?.altText || product.title}
@@ -66,7 +78,6 @@ export async function ProductCard({
               compareAtAmount={product.compareAtPrice?.amount}
               compareAtCurrencyCode={product.compareAtPrice?.currencyCode}
               locale={locale}
-              discountVariant={isFeatured ? "blue" : "green"}
             />
           </ProductCardContent>
         </ProductCardImageContainer>

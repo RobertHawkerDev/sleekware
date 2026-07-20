@@ -15,7 +15,7 @@ function Fallback() {
   return (
     <ProductsGridSkeleton
       count={RESULTS_PER_PAGE}
-      className="sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+      className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
     />
   );
 }
@@ -36,9 +36,11 @@ async function Render({
 
   if (products.length === 0) {
     return (
-      <div className="py-10 text-center">
-        <h2 className="mb-2 text-2xl font-semibold">{t("noResults")}</h2>
-        <p className="text-muted-foreground">{t("noResultsAvailable")}</p>
+      <div className="py-12 text-left border border-neutral-200 bg-white p-6 rounded-none">
+        <h2 className="text-[11px] font-black uppercase tracking-wider text-black">
+          {t("noResults")}
+        </h2>
+        <p className="mt-1 text-xs font-mono text-neutral-400">{t("noResultsAvailable")}</p>
       </div>
     );
   }
@@ -52,8 +54,6 @@ async function Render({
     />
   ));
 
-  // /collections/all is backed by the catalog-browse search() field, not the collection
-  // field — load-more has to call the same backend the initial page used.
   if (collection === ALL_PRODUCTS_HANDLE) {
     return (
       <InfiniteProductGrid

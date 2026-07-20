@@ -41,7 +41,7 @@ export function ProductGridPendingOverlay({ children }: { children: React.ReactN
     <div
       className={cn(
         "transition-opacity duration-200",
-        isPending && "opacity-50 pointer-events-none",
+        isPending && "opacity-40 pointer-events-none",
       )}
     >
       {children}

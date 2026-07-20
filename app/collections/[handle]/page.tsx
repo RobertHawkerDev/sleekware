@@ -41,9 +41,7 @@ export async function generateMetadata({
     return {
       title,
       description,
-      alternates: buildAlternates({
-        pathname: `/collections/${handle}`,
-      }),
+      alternates: buildAlternates({ pathname: `/collections/${handle}` }),
       openGraph: buildOpenGraph({
         title,
         description,
@@ -65,9 +63,7 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: buildAlternates({
-      pathname: `/collections/${collection.handle}`,
-    }),
+    alternates: buildAlternates({ pathname: `/collections/${collection.handle}` }),
     openGraph: buildOpenGraph({
       title,
       description,
@@ -93,8 +89,6 @@ export default async function CollectionPage({
   const collection = await getCollection({ handle, locale });
   if (!collection) notFound();
 
-  // Keep searchParams unawaited so only the results/filters/sort stream; the
-  // collection header resolves here and renders into the static shell.
   const searchStatePromise = getCollectionSearchState(searchParams);
   const collectionResultsDataPromise = getCollectionResultsData({
     handle,

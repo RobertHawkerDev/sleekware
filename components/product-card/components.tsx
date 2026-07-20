@@ -1,9 +1,7 @@
 import Image from "next/image";
 import type * as React from "react";
 
-import { DiscountBadge } from "@/components/product/discount-badge";
 import { Price } from "@/components/product/price";
-import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { cn } from "@/lib/utils";
 
 interface ProductCardProps extends React.ComponentProps<"article"> {
@@ -15,7 +13,7 @@ function ProductCard({ variant = "default", className, children, ...props }: Pro
     <article
       data-slot="product-card"
       data-variant={variant}
-      className={cn("flex flex-col h-full overflow-hidden", className)}
+      className={cn("group relative flex flex-col h-full rounded-none", className)}
       {...props}
     >
       {children}
@@ -45,11 +43,7 @@ function ProductCardImageContainer({
     <div
       data-slot="product-card-image-container"
       data-variant={variant}
-      className={cn(
-        "flex flex-col",
-        "data-[variant=featured]:-mt-px data-[variant=featured]:bg-linear-to-b/oklch data-[variant=featured]:from-primary data-[variant=featured]:from-0% data-[variant=featured]:to-45% data-[variant=featured]:to-primary/10",
-        className,
-      )}
+      className={cn("relative flex flex-col w-full rounded-none", className)}
       {...props}
     >
       {children}
@@ -60,7 +54,7 @@ function ProductCardImageContainer({
 type ProductCardAspectRatio = "landscape" | "portrait" | "square";
 
 const aspectRatioClasses =
-  "data-[aspect-ratio=landscape]:aspect-[4/3] data-[aspect-ratio=portrait]:aspect-[3/4] data-[aspect-ratio=square]:aspect-square";
+  "data-[aspect-ratio=landscape]:aspect-[4/3] data-[aspect-ratio=portrait]:aspect-[4/5] data-[aspect-ratio=square]:aspect-square";
 
 interface ProductCardImageProps {
   src?: string | null;
@@ -75,26 +69,39 @@ interface ProductCardImageProps {
 function ProductCardImage({
   src,
   alt,
-  sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw",
+  sizes,
   outOfStock = false,
-  outOfStockText,
-  aspectRatio = "square",
+  outOfStockText = "Sold Out",
+  aspectRatio = "portrait",
   className,
 }: ProductCardImageProps) {
   return (
     <div
       data-slot="product-card-image"
       data-aspect-ratio={aspectRatio}
-      className={cn("relative overflow-hidden", aspectRatioClasses, className)}
+      className={cn(
+        "relative w-full overflow-hidden bg-neutral-100 rounded-none",
+        aspectRatioClasses,
+        className,
+      )}
     >
       {src ? (
-        <Image src={src} alt={alt} fill quality={80} className="object-cover" sizes={sizes} />
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          quality={80}
+          sizes={sizes}
+          className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-[1.01]"
+        />
       ) : (
-        <ImagePlaceholder className="size-full" />
+        <div className="flex h-full w-full items-center justify-center bg-neutral-200 text-xs text-neutral-400 font-bold uppercase">
+          {alt.slice(0, 2)}
+        </div>
       )}
       {outOfStock && (
-        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-          <span className="text-destructive-foreground font-medium text-xs px-2 py-1 bg-destructive rounded">
+        <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
+          <span className="bg-black px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white rounded-none border border-white/20">
             {outOfStockText}
           </span>
         </div>
@@ -107,7 +114,7 @@ function ProductCardContent({ className, children, ...props }: React.ComponentPr
   return (
     <div
       data-slot="product-card-content"
-      className={cn("flex flex-col flex-1 py-2.5", className)}
+      className={cn("mt-3 space-y-1 text-left", className)}
       {...props}
     >
       {children}
@@ -119,7 +126,10 @@ function ProductCardTitle({ className, children, ...props }: React.ComponentProp
   return (
     <h3
       data-slot="product-card-title"
-      className={cn("text-sm font-medium text-foreground line-clamp-1", className)}
+      className={cn(
+        "text-sm sm:text-base font-black uppercase tracking-wider text-black leading-tight line-clamp-1",
+        className,
+      )}
       {...props}
     >
       {children}
@@ -130,18 +140,11 @@ function ProductCardTitle({ className, children, ...props }: React.ComponentProp
 interface ProductCardPriceProps {
   amount: string;
   currencyCode: string;
-  /** Highest variant price; when it differs from amount the card renders a "min – max" range. */
   maxAmount?: string;
   compareAtAmount?: string;
   compareAtCurrencyCode?: string;
   locale: string;
-  discountVariant?: "green" | "blue";
   className?: string;
-}
-
-function getDiscountPercent(price: number, compareAtPrice: number | undefined): number | null {
-  if (!compareAtPrice || compareAtPrice <= price) return null;
-  return Math.round(((compareAtPrice - price) / compareAtPrice) * 100);
 }
 
 function ProductCardPrice({
@@ -149,57 +152,50 @@ function ProductCardPrice({
   currencyCode,
   maxAmount,
   compareAtAmount,
-  compareAtCurrencyCode,
   locale,
-  discountVariant = "green",
   className,
 }: ProductCardPriceProps) {
-  const priceNum = parseFloat(amount);
-  const compareAtNum = compareAtAmount ? parseFloat(compareAtAmount) : undefined;
   const isRange = maxAmount != null && maxAmount !== amount;
-  // A range's per-variant discounts differ, so a single compare-at would be misleading.
-  const discountPercent = isRange ? null : getDiscountPercent(priceNum, compareAtNum);
 
   return (
-    <div data-slot="product-card-price" className={cn(className)}>
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <span className="inline-flex items-baseline gap-x-1 text-sm text-foreground">
+    <div
+      data-slot="product-card-price"
+      className={cn(
+        "pt-0.5 text-sm font-bold text-black flex flex-wrap items-baseline gap-x-2",
+        className,
+      )}
+    >
+      <Price
+        amount={amount}
+        currencyCode={currencyCode}
+        locale={locale}
+        className="text-sm font-bold text-black"
+      />
+      {isRange && (
+        <>
+          <span className="text-neutral-400 font-normal text-xs">–</span>
           <Price
-            amount={amount}
+            amount={maxAmount}
             currencyCode={currencyCode}
             locale={locale}
-            className="text-sm text-foreground"
+            className="text-sm font-bold text-black"
           />
-          {isRange && (
-            <>
-              <span>–</span>
-              <Price
-                amount={maxAmount}
-                currencyCode={currencyCode}
-                locale={locale}
-                className="text-sm text-foreground"
-              />
-            </>
-          )}
-        </span>
-        {discountPercent && compareAtAmount && compareAtCurrencyCode && (
-          <>
-            <Price
-              amount={compareAtAmount}
-              currencyCode={compareAtCurrencyCode}
-              locale={locale}
-              className="text-xs text-muted-foreground line-through"
-            />
-            <DiscountBadge percent={discountPercent} variant={discountVariant} />
-          </>
-        )}
-      </div>
+        </>
+      )}
+      {compareAtAmount && parseFloat(compareAtAmount) > parseFloat(amount) && (
+        <Price
+          amount={compareAtAmount}
+          currencyCode={currencyCode}
+          locale={locale}
+          className="text-xs font-mono font-medium text-neutral-400 line-through tracking-tight"
+        />
+      )}
     </div>
   );
 }
 
 function ProductCardSkeleton({
-  aspectRatio = "square",
+  aspectRatio = "portrait",
   className,
 }: {
   aspectRatio?: ProductCardAspectRatio;
@@ -208,15 +204,19 @@ function ProductCardSkeleton({
   return (
     <div
       data-slot="product-card-skeleton"
-      className={cn("flex flex-col overflow-hidden", className)}
+      className={cn(
+        "flex flex-col h-full w-full pointer-events-none animate-pulse rounded-none",
+        className,
+      )}
     >
-      <ImagePlaceholder
+      <div
+        className={cn("w-full bg-neutral-200 rounded-none", aspectRatioClasses)}
         data-aspect-ratio={aspectRatio}
-        className={cn("animate-pulse", aspectRatioClasses)}
       />
-      <div className="py-2.5 h-12 box-content grid gap-2">
-        <div className="h-4 w-full bg-accent animate-pulse" />
-        <div className="h-4 w-12 bg-accent animate-pulse" />
+      <div className="mt-3 space-y-2">
+        <div className="h-4 w-3/4 bg-neutral-200 rounded-none" />
+        <div className="h-3.5 w-1/2 bg-neutral-200 rounded-none" />
+        <div className="h-4 w-1/5 bg-neutral-200 rounded-none pt-0.5" />
       </div>
     </div>
   );

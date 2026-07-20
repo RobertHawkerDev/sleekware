@@ -41,14 +41,27 @@ export function CollectionsSortSelect({ exclude }: { exclude?: string[] } = {}) 
     });
   };
 
+  const activeOption = options.find((o) => o.value === currentSort);
+
   return (
     <Select value={currentSort} onValueChange={handleSortChange} disabled={isPending}>
-      <SelectTrigger className="border-0 shadow-none bg-transparent px-0">
-        <span>{tSearch("sortBy")}</span>
+      <SelectTrigger className="flex h-fit w-fit items-center justify-between gap-2 border border-neutral-200 bg-white px-4 py-2.5 text-[11px] font-black uppercase tracking-wider text-black rounded-none shadow-none outline-none focus:ring-0 focus:border-black hover:border-black transition-colors cursor-pointer disabled:opacity-50">
+        <span>
+          {tSearch("sortBy")}
+          {activeOption && currentSort !== "best-matches" && (
+            <span className="text-neutral-400 font-mono tracking-normal ml-1">
+              : {tSort(activeOption.key)}
+            </span>
+          )}
+        </span>
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="rounded-none border-neutral-200 bg-white shadow-md p-1 min-w-[180px]">
         {options.map((option) => (
-          <SelectItem key={option.value} value={option.value}>
+          <SelectItem
+            key={option.value}
+            value={option.value}
+            className="text-[10px] font-black uppercase tracking-wider text-neutral-500 data-[selected]:text-black focus:bg-neutral-50 focus:text-black rounded-none transition-colors py-2 px-3 cursor-pointer"
+          >
             {tSort(option.key)}
           </SelectItem>
         ))}

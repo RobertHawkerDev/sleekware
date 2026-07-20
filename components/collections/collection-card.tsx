@@ -23,28 +23,40 @@ export function CollectionCard({
   return (
     <Link
       aria-label={`${viewCollectionLabel}: ${title}`}
-      className={cn("flex flex-col h-full overflow-hidden", className)}
+      className={cn(
+        "flex flex-col h-full overflow-hidden rounded-none border border-neutral-200 bg-white transition-colors hover:border-neutral-400 group",
+        className,
+      )}
       href={`/collections/${handle}`}
     >
-      <div data-slot="collection-card-image" className="relative aspect-square overflow-hidden">
+      {/* Square aspect ratio frame for clean alignment */}
+      <div
+        data-slot="collection-card-image"
+        className="relative aspect-square overflow-hidden bg-white border-b border-neutral-200"
+      >
         {thumbnail ? (
           <Image
             alt={thumbnail.altText || title}
-            className="object-cover"
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.01]"
             fill
             sizes={sizes}
             src={thumbnail.url}
+            priority
           />
         ) : (
-          <ImagePlaceholder className="size-full" />
+          <ImagePlaceholder className="size-full rounded-none border-0" />
         )}
       </div>
-      <h2
-        data-slot="collection-card-title"
-        className="py-2.5 text-sm font-medium text-foreground line-clamp-1"
-      >
-        {title}
-      </h2>
+
+      {/* Styled text layout matching the bold, tracking-heavy product detail bars */}
+      <div className="p-3 bg-white">
+        <h2
+          data-slot="collection-card-title"
+          className="text-[11px] font-black text-black uppercase tracking-wider line-clamp-1"
+        >
+          {title}
+        </h2>
+      </div>
     </Link>
   );
 }

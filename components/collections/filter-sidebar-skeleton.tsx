@@ -11,13 +11,24 @@ const FILTER_OPTION_SKELETON_KEYS = Array.from(
 
 export function CollectionFilterSidebarSkeleton() {
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6 rounded-none">
       {FILTER_SECTION_SKELETON_KEYS.map((sectionKey) => (
-        <div key={sectionKey} className="space-y-2.5">
-          <Skeleton className="h-5 w-24" />
-          <div className="space-y-2.5">
+        <div
+          key={sectionKey}
+          className="space-y-3 pb-4 border-b border-neutral-100 last:border-b-0"
+        >
+          {/* Section Title Header Skeleton */}
+          <Skeleton className="h-3 w-20 rounded-none bg-neutral-100" />
+
+          {/* Options List Skeleton Container */}
+          <div className="space-y-2.5 pt-1">
             {FILTER_OPTION_SKELETON_KEYS.map((optionKey) => (
-              <Skeleton key={`${sectionKey}-${optionKey}`} className="h-4 w-full" />
+              <div key={`${sectionKey}-${optionKey}`} className="flex justify-between items-center">
+                {/* Left side label placeholder */}
+                <Skeleton className="h-3 w-28 rounded-none bg-neutral-100" />
+                {/* Right side numeric counts placeholder */}
+                <Skeleton className="h-3 w-6 rounded-none bg-neutral-100/60" />
+              </div>
             ))}
           </div>
         </div>

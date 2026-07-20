@@ -199,8 +199,8 @@ export function CollectionFilterSidebarClient({
   const totalActiveCount = activeBadges.length + (hasPriceFilter ? 1 : 0);
 
   return (
-    <FilterSidebar>
-      <div className="flex flex-col gap-5 pb-41.5">
+    <FilterSidebar className="p-1">
+      <div className="flex flex-col gap-2 pb-16">
         <FilterSidebarHeader
           title={tSearch("filters")}
           resetLabel={tSearch("reset")}
@@ -265,7 +265,7 @@ export function CollectionFilterSidebarClient({
                           value: value.label,
                         })}
                         aria-pressed={currentValues.includes(value.value)}
-                        className="block cursor-pointer"
+                        className="block cursor-pointer outline-none rounded-none"
                         onClick={(e) => {
                           e.preventDefault();
                           toggleFilter(filter.paramKey, value.value);
@@ -276,6 +276,7 @@ export function CollectionFilterSidebarClient({
                           image={value.swatch?.image}
                           label={value.label}
                           selected={currentValues.includes(value.value)}
+                          className="rounded-none border-neutral-200"
                         />
                       </Link>
                     ))}

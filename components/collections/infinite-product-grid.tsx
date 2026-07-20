@@ -19,7 +19,6 @@ interface InfiniteProductGridProps<TParams> {
   initialPageInfo: PageInfo;
   locale: string;
   outOfStockText: string;
-  // Top-level "use server" action; passed by reference, no closure encryption.
   loadMore: (
     params: TParams & { cursor: string },
   ) => Promise<{ products: ProductCard[]; pageInfo: PageInfo }>;
@@ -41,10 +40,8 @@ export function InfiniteProductGrid<TParams>({
   const [isLoading, setIsLoading] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
-  // Live cursor pages can re-emit a boundary product if the ranking shifts mid-scroll; skip ids already shown.
   const seenIdsRef = useRef<Set<string>>(new Set(initialProducts.map((product) => product.id)));
 
-  // Reset when initial data changes (filter/sort navigation)
   useEffect(() => {
     setAdditionalProducts([]);
     setPageInfo(initialPageInfo);
@@ -103,7 +100,7 @@ export function InfiniteProductGrid<TParams>({
 
       {pageInfo.hasNextPage && (
         <div ref={sentinelRef} className="flex justify-center py-10">
-          {isLoading && <LoaderCircleIcon className="size-6 animate-spin text-muted-foreground" />}
+          {isLoading && <LoaderCircleIcon className="size-6 animate-spin text-neutral-400" />}
         </div>
       )}
     </>
@@ -123,8 +120,15 @@ function ClientProductCard({
     ? `/products/${product.handle}?variant=${product.defaultVariantNumericId}`
     : `/products/${product.handle}`;
 
+  // Safe checks for size selections matching original code
+  const productWithVariants = product as ProductCard & {
+    options?: Array<{ name: string; values: Array<{ name: string }> }>;
+  };
+  const sizeOption = productWithVariants.options?.find((o) => o?.name === "Size");
+  const sizeValues = sizeOption?.values ?? [];
+
   return (
-    <Link href={href}>
+    <Link href={href} className="group relative flex flex-col h-full rounded-none outline-none">
       <ProductCardRoot>
         <ProductCardImageContainer>
           <ProductCardImage
@@ -134,8 +138,11 @@ function ClientProductCard({
             outOfStock={!product.availableForSale}
             outOfStockText={outOfStockText}
           />
-          <ProductCardContent>
-            <ProductCardTitle>{product.title}</ProductCardTitle>
+          <ProductCardContent className="mt-3 space-y-1">
+            <ProductCardTitle className="text-sm sm:text-base font-black uppercase tracking-wider text-black leading-tight line-clamp-1">
+              {product.title}
+            </ProductCardTitle>
+
             <ProductCardPrice
               amount={product.price.amount}
               currencyCode={product.price.currencyCode}
@@ -143,7 +150,21 @@ function ClientProductCard({
               compareAtAmount={product.compareAtPrice?.amount}
               compareAtCurrencyCode={product.compareAtPrice?.currencyCode}
               locale={locale}
+              className="pt-0.5 text-sm font-bold text-black"
             />
+
+            {sizeValues.length > 0 && (
+              <div className="flex flex-wrap gap-1 pt-1.5 pointer-events-none">
+                {sizeValues.map((value, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center justify-center px-2 py-0.5 bg-neutral-100 border border-neutral-200 text-[10px] font-bold uppercase text-neutral-600 rounded-none"
+                  >
+                    {value?.name ?? "—"}
+                  </span>
+                ))}
+              </div>
+            )}
           </ProductCardContent>
         </ProductCardImageContainer>
       </ProductCardRoot>

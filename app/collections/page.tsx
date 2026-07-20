@@ -17,40 +17,31 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
-    alternates: buildAlternates({
-      pathname: "/collections",
-    }),
-    openGraph: buildOpenGraph({
-      title,
-      description,
-      url: "/collections",
-      type: "website",
-    }),
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: ["/og-default.png"],
-    },
+    alternates: buildAlternates({ pathname: "/collections" }),
+    openGraph: buildOpenGraph({ title, description, url: "/collections", type: "website" }),
+    twitter: { card: "summary_large_image", title, description, images: ["/og-default.png"] },
   };
 }
 
 export default async function CollectionsPage() {
   const [locale, t] = await Promise.all([getLocale(), getTranslations("collections")]);
   const collections = await getCollectionsListing({ locale });
-
   const viewCollectionLabel = t("viewCollection");
 
   return (
-    <Page className="pt-2.5 md:pt-10">
+    <Page className="pt-6 md:pt-10">
       <Container>
-        <Sections className="gap-5">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-display">
-            {t("title")}
-          </h1>
+        <Sections className="gap-6">
+          {/* Matches the clean edge-to-edge border line beneath main headers */}
+          <div className="border-b border-neutral-200 pb-5">
+            <h1 className="text-3xl md:text-4xl font-black text-black uppercase tracking-tight">
+              {t("title")}
+            </h1>
+          </div>
 
           {collections.length > 0 ? (
-            <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+            /* Perfectly aligned 4-column product/collection layout grid */
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {collections.map((collection) => (
                 <CollectionCard
                   key={collection.handle}
@@ -60,7 +51,7 @@ export default async function CollectionsPage() {
               ))}
             </div>
           ) : (
-            <p className="text-muted-foreground">{t("empty")}</p>
+            <p className="text-sm font-medium text-neutral-500">{t("empty")}</p>
           )}
         </Sections>
       </Container>

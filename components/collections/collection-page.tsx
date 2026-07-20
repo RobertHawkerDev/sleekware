@@ -44,9 +44,9 @@ export async function CollectionDetailPage({
 
   return (
     <FilterTransitionProvider>
-      <Page className="pt-2.5 md:pt-10">
+      <Page className="pt-6 md:pt-10">
         <Container>
-          <Sections className="gap-5">
+          <Sections className="gap-6">
             <CollectionHeader
               collection={collection}
               handle={handle}
@@ -58,8 +58,11 @@ export async function CollectionDetailPage({
                 <FilterSidebarSheet
                   label={filtersLabel}
                   trigger={
-                    <button type="button" className="flex items-center gap-2 text-sm font-medium">
-                      <SlidersHorizontalIcon className="size-4" />
+                    <button
+                      type="button"
+                      className="flex items-center gap-2 text-[11px] font-black uppercase tracking-wider text-black border border-neutral-200 px-4 py-2.5 bg-white hover:border-black transition-colors rounded-none cursor-pointer"
+                    >
+                      <SlidersHorizontalIcon className="size-3.5 stroke-[2.5]" />
                       <span>{filtersLabel}</span>
                       <Suspense fallback={null}>
                         <CollectionFilterCountBadge searchStatePromise={searchStatePromise} />
@@ -114,11 +117,17 @@ function CollectionHeader({
     <>
       <BreadcrumbSchema items={breadcrumbItems} />
       <CollectionSchema collection={{ handle, title, description, updatedAt }} />
-      <div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight">
-          <Link href={`/collections/${handle}`}>{title}</Link>
+      <div className="border-b border-neutral-200 pb-5">
+        <h1 className="text-3xl md:text-4xl font-black text-black uppercase tracking-tight">
+          <Link href={`/collections/${handle}`} className="hover:opacity-90 transition-opacity">
+            {title}
+          </Link>
         </h1>
-        {description && <p className="mt-1 leading-6 text-muted-foreground">{description}</p>}
+        {description && (
+          <p className="mt-2 text-xs font-mono font-medium tracking-wide text-neutral-500 max-w-3xl leading-relaxed">
+            {description}
+          </p>
+        )}
       </div>
     </>
   );
@@ -134,9 +143,11 @@ async function CollectionFilterCountBadge({
     if (!v) return count;
     return count + (Array.isArray(v) ? v.length : 1);
   }, 0);
+
   if (activeCount === 0) return null;
+
   return (
-    <span className="flex size-5 items-center justify-center rounded-full bg-foreground text-xs text-background">
+    <span className="flex px-1.5 py-0.5 items-center justify-center rounded-none bg-black text-[9px] font-black font-mono tracking-normal text-white ml-0.5">
       {activeCount}
     </span>
   );

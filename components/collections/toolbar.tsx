@@ -13,11 +13,14 @@ export function CollectionToolbar({
   resultCount,
 }: CollectionToolbarProps) {
   return (
-    <div className="flex items-center gap-5">
-      {filterSheet}
-      <div className="ml-auto flex items-center gap-5">
+    <div className="flex w-full items-center justify-between border-b border-neutral-200 py-3 rounded-none bg-white">
+      {/* Action triggers container */}
+      <div className="flex items-center gap-4">{filterSheet}</div>
+
+      {/* Context info and sort options */}
+      <div className="flex items-center gap-4">
         {resultCount !== undefined && (
-          <div className="hidden items-center text-sm text-muted-foreground sm:flex">
+          <div className="hidden items-center text-[10px] font-mono uppercase tracking-wider text-neutral-400 sm:flex tabular-nums">
             {resultCount}
           </div>
         )}
