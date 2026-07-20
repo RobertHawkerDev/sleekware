@@ -28,14 +28,17 @@ export async function ProductsSlider({
 }: ProductsSliderProps) {
   const t = await getTranslations("product");
   return (
-    <Slider>
-      <SliderHeader>
-        <SliderTitle>{title}</SliderTitle>
+    <Slider className="space-y-6">
+      <SliderHeader className="flex items-center justify-between border-b border-neutral-200 pb-4">
+        <SliderTitle className="text-sm font-black uppercase tracking-widest text-black">
+          {title}
+        </SliderTitle>
+        {/* Make sure your custom SliderNav items are styled as sharp squares with no border-radius */}
         <SliderNav />
       </SliderHeader>
       <SliderContent>
         {products.map((product) => (
-          <SliderItem key={product.id}>
+          <SliderItem key={product.id} className="rounded-none">
             <ProductCard
               product={product}
               locale={locale}

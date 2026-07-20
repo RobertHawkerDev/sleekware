@@ -71,7 +71,7 @@ export function ProductDetailSection({
           { name: product.title, path: `/products/${product.handle}` },
         ]}
       />
-      <div className="grid gap-10 lg:grid-cols-10 lg:items-start lg:gap-5">
+      <div className="grid gap-12 lg:grid-cols-10 lg:items-start lg:gap-8">
         <ProductMediaArea product={product} selectedOptionsPromise={selectedOptionsPromise} />
         <ProductInfoArea
           product={product}
@@ -97,7 +97,7 @@ function ProductMediaArea({
         otherImages={product.images}
         videos={product.videos}
         title={product.title}
-        className="lg:col-span-6"
+        className="lg:col-span-6 rounded-none"
       />
     );
   }
@@ -107,9 +107,11 @@ function ProductMediaArea({
       otherImages={getSharedImages(product.images, product.options)}
       videos={product.videos}
       title={product.title}
-      className="lg:col-span-6"
+      className="lg:col-span-6 rounded-none"
       desktopSlot={
-        <Suspense fallback={<Skeleton className="w-full rounded-none aspect-square" />}>
+        <Suspense
+          fallback={<Skeleton className="w-full rounded-none aspect-square bg-neutral-100" />}
+        >
           <ResolvedColorImageGrid
             product={product}
             selectedOptionsPromise={selectedOptionsPromise}
@@ -120,7 +122,7 @@ function ProductMediaArea({
         <Suspense
           fallback={
             <div className="relative shrink-0 w-full snap-start snap-always overflow-hidden aspect-square">
-              <Skeleton className="size-full rounded-none" />
+              <Skeleton className="size-full rounded-none bg-neutral-100" />
             </div>
           }
         >
@@ -182,9 +184,11 @@ async function ProductInfoArea({
   const allInStock = product.defaultVariant?.availableForSale ?? availableForSale;
 
   return (
-    <div className="grid gap-10 lg:sticky lg:top-20 lg:col-span-4">
-      <div data-slot="product-info-header">
-        <h1 className="font-medium text-foreground tracking-display text-3xl">{title}</h1>
+    <div className="grid gap-8 lg:sticky lg:top-24 lg:col-span-4 border border-neutral-200 p-6 bg-white rounded-none">
+      <div data-slot="product-info-header" className="space-y-2 border-b border-neutral-200 pb-4">
+        <h1 className="font-black text-black uppercase tracking-wider text-2xl md:text-3xl leading-none">
+          {title}
+        </h1>
         {uniformPrice ? (
           <ProductPrice
             amount={product.priceRange.minVariantPrice.amount}
@@ -193,78 +197,82 @@ async function ProductInfoArea({
             locale={locale}
           />
         ) : (
-          // h-7 matches the resolved price's text-xl line-height (1.75rem) — keep in sync to avoid CLS
           <Suspense fallback={<div className="h-7" aria-hidden />}>
             <ResolvedProductPrice variantPromise={variantPromise} locale={locale} />
           </Suspense>
         )}
       </div>
 
-      {eagerSelection ? (
-        <ProductInfoOptions
-          availableValues={availableValues}
-          options={options}
-          selectedOptions={eagerSelection.selectedOptions}
-          handle={handle}
-          t={t}
-        />
-      ) : (
-        <Suspense
-          fallback={
-            <ProductInfoOptions
-              availableValues={availableValues}
-              options={options}
-              selectedOptions={{}}
-              handle={handle}
-              t={t}
-              hideImages
-            />
-          }
-        >
-          <ResolvedProductInfoOptions
+      <div className="border-b border-neutral-100 pb-6">
+        {eagerSelection ? (
+          <ProductInfoOptions
             availableValues={availableValues}
             options={options}
+            selectedOptions={eagerSelection.selectedOptions}
             handle={handle}
-            selectedOptionsPromise={selectedOptionsPromise}
             t={t}
           />
-        </Suspense>
-      )}
+        ) : (
+          <Suspense
+            fallback={
+              <ProductInfoOptions
+                availableValues={availableValues}
+                options={options}
+                selectedOptions={{}}
+                handle={handle}
+                t={t}
+                hideImages
+              />
+            }
+          >
+            <ResolvedProductInfoOptions
+              availableValues={availableValues}
+              options={options}
+              handle={handle}
+              selectedOptionsPromise={selectedOptionsPromise}
+              t={t}
+            />
+          </Suspense>
+        )}
+      </div>
 
-      {eagerSelection ? (
-        <BuyButtons
-          selectedVariant={toBuyButtonVariant(eagerSelection.selectedVariant)}
-          title={title}
-          handle={handle}
-          featuredImage={featuredImage}
-          availableForSale={availableForSale}
-        />
-      ) : (
-        <Suspense fallback={<BuyButtonsFallback t={buyFallbackT} allInStock={allInStock} />}>
-          <ResolvedBuyButtons
+      <div>
+        {eagerSelection ? (
+          <BuyButtons
+            selectedVariant={toBuyButtonVariant(eagerSelection.selectedVariant)}
             title={title}
             handle={handle}
             featuredImage={featuredImage}
             availableForSale={availableForSale}
-            variantPromise={variantPromise}
           />
-        </Suspense>
-      )}
+        ) : (
+          <Suspense fallback={<BuyButtonsFallback t={buyFallbackT} allInStock={allInStock} />}>
+            <ResolvedBuyButtons
+              title={title}
+              handle={handle}
+              featuredImage={featuredImage}
+              availableForSale={availableForSale}
+              variantPromise={variantPromise}
+            />
+          </Suspense>
+        )}
+      </div>
 
       <BundleRelationships variant={product.defaultVariant} t={t} />
 
       <ComplementaryProducts handle={handle} locale={locale} title={t("pairsWith")} />
 
-      <ProductInfoDescription descriptionHtml={descriptionHtml} />
+      <div className="border-t border-neutral-200 pt-6">
+        <ProductInfoDescription descriptionHtml={descriptionHtml} />
+      </div>
 
-      <ProductSpecs metafields={product.metafields ?? []} title={t("specifications")} />
+      <div className="border-t border-neutral-200 pt-6">
+        <ProductSpecs metafields={product.metafields ?? []} title={t("specifications")} />
+      </div>
     </div>
   );
 }
 
-// Bundle relationships are product-level (which products a bundle contains / which
-// bundles a product belongs to), so they render eagerly from the cached default
-// variant in the static shell rather than streaming in behind the variant query.
 function BundleRelationships({
   variant,
   t,
@@ -275,7 +283,7 @@ function BundleRelationships({
   if (!variant) return null;
   if (variant.components.length === 0 && variant.bundleParents.length === 0) return null;
   return (
-    <div className="grid gap-5">
+    <div className="grid gap-6 border-t border-neutral-200 pt-6">
       <BundleComponents components={variant.components} title={t("bundleIncludes")} />
       <BundleParents variants={variant.bundleParents} title={t("availableInBundles")} />
     </div>
@@ -326,8 +334,6 @@ async function ResolvedProductInfoOptions({
   );
 }
 
-// Bundle relationship arrays stay server-side; the client buy controls only need
-// the gating boolean (a customized bundle parent has no fixed components to ship).
 function toBuyButtonVariant(variant: ProductVariant | undefined): BuyButtonVariant | undefined {
   if (!variant) return undefined;
   return {
@@ -375,24 +381,24 @@ function BuyButtonsFallback({
 }) {
   if (!t) {
     return (
-      <div className="grid grid-cols-2 gap-2.5">
-        <div className="h-12 rounded-lg bg-shop" />
-        <div className="h-12 rounded-lg bg-primary" />
+      <div className="grid grid-cols-2 gap-4">
+        <div className="h-14 rounded-none bg-[#5a31f4]/40 animate-pulse" />
+        <div className="h-14 rounded-none bg-neutral-200 animate-pulse" />
       </div>
     );
   }
   return (
-    <div className="grid grid-cols-2 gap-2.5">
+    <div className="grid grid-cols-2 gap-4">
       <div
         className={cn(
-          "flex items-center justify-center gap-1.5 rounded-lg h-12 bg-shop text-white",
+          "flex items-center justify-center gap-1.5 rounded-none h-14 bg-[#5a31f4] text-white opacity-40 select-none",
           !allInStock && "invisible",
         )}
       >
-        <span className="text-sm font-medium">{t("buyWithShop")}</span>
-        <ShopLogo className="h-4 w-auto" />
+        <span className="text-xs font-black uppercase tracking-widest">{t("buyWithShop")}</span>
+        <ShopLogo className="h-3.5 w-auto fill-current text-white" />
       </div>
-      <div className="flex items-center justify-center rounded-lg h-12 bg-primary text-primary-foreground text-sm font-medium">
+      <div className="flex items-center justify-center rounded-none h-14 bg-black text-white text-xs font-black uppercase tracking-widest opacity-40 select-none">
         {allInStock ? t("addToCart") : t("outOfStock")}
       </div>
     </div>
@@ -401,11 +407,15 @@ function BuyButtonsFallback({
 
 export function ProductDetailSectionSkeleton() {
   return (
-    <div className="grid gap-10 lg:grid-cols-10 lg:items-start lg:gap-5">
-      <ProductMediaSkeleton className="lg:col-span-6" />
-      <div className="grid gap-10 lg:sticky lg:top-20 lg:col-span-4">
-        <Skeleton className="h-40 w-full" />
-        <Skeleton className="h-32 w-full" />
+    <div className="grid gap-12 lg:grid-cols-10 lg:items-start lg:gap-8">
+      <ProductMediaSkeleton className="lg:col-span-6 rounded-none" />
+      <div className="grid gap-8 lg:sticky lg:top-24 lg:col-span-4 border border-neutral-200 p-6 bg-white rounded-none">
+        <Skeleton className="h-24 w-full rounded-none bg-neutral-100" />
+        <Skeleton className="h-32 w-full rounded-none bg-neutral-100" />
+        <div className="grid grid-cols-2 gap-4">
+          <Skeleton className="h-14 rounded-none bg-neutral-100" />
+          <Skeleton className="h-14 rounded-none bg-neutral-100" />
+        </div>
       </div>
     </div>
   );

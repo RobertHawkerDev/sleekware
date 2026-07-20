@@ -14,7 +14,7 @@ interface ProductsGridSkeletonProps {
 
 export function ProductsGridSkeleton({ count, className }: ProductsGridSkeletonProps) {
   return (
-    <div className={cn("grid grid-cols-2 gap-5 lg:grid-cols-4", className)}>
+    <div className={cn("grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-6 lg:grid-cols-4", className)}>
       {Array.from({ length: count }, (_, index) => (
         <ProductCardSkeleton key={index} />
       ))}
@@ -33,15 +33,15 @@ export async function ProductsGrid({ collectionUrl, limit, locale, title }: Prod
   const t = await getTranslations("product");
 
   return (
-    <div className="grid gap-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tighter">{title}</h2>
+    <div className="space-y-8">
+      <div className="flex items-baseline justify-between border-b border-neutral-200 pb-4">
+        <h2 className="text-sm font-black uppercase tracking-widest text-black">{title}</h2>
         {collectionUrl && (
           <Link
             href={collectionUrl}
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs font-bold uppercase tracking-wider text-neutral-400 hover:text-black transition-colors"
           >
-            {t("viewAll")}
+            {t("viewAll")} —
           </Link>
         )}
       </div>
@@ -61,13 +61,12 @@ async function ProductsGridContent({
   locale: Locale;
   outOfStockText: string;
 }) {
-  // Use the search index (not the products connection) so these match the first items on /collections/all.
   const { products } = await searchIndexProducts({ limit, locale });
 
   if (products.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-6 lg:grid-cols-4">
       {products.map((product) => (
         <ProductCard
           key={product.id}

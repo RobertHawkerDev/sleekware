@@ -13,9 +13,6 @@ import { cn } from "@/lib/utils";
 
 import { ShopLogo } from "./shop-logo";
 
-// Client-facing projection of the selected variant — only the fields the buy
-// controls need. Bundle relationship arrays stay on the server; the gating they
-// imply is collapsed to the requiresBundleConfiguration boolean.
 export interface BuyButtonVariant {
   availableForSale: boolean;
   id: string;
@@ -46,7 +43,6 @@ export function BuyButtons({
   const [isBuyingNow, setIsBuyingNow] = useState(false);
   const { addToCartOptimistic, pendingQuantity, isAddingToCart } = useCart();
 
-  // Reset pending state when returning from checkout (bfcache / back navigation)
   useEffect(() => {
     const handlePageShow = (e: PageTransitionEvent) => {
       if (e.persisted) setIsBuyingNow(false);
@@ -102,22 +98,22 @@ export function BuyButtons({
   };
 
   return (
-    <div className="grid grid-cols-2 gap-2.5">
+    <div className="grid grid-cols-2 gap-4">
       <button
         type="button"
         className={cn(
-          "flex flex-1 items-center justify-center gap-1.5 rounded-lg h-12 bg-shop text-white transition-all hover:bg-shop/85 disabled:pointer-events-none disabled:opacity-50",
+          "flex flex-1 items-center justify-center gap-1.5 rounded-none h-14 bg-[#5a31f4] text-white transition-colors hover:bg-[#4b28d4] disabled:pointer-events-none disabled:opacity-40 active:scale-[0.99]",
           !availableForSale && "invisible",
         )}
         disabled={isOutOfStock || isBuyingNow || requiresBundleConfiguration}
         onClick={handleBuyNow}
       >
         {isBuyingNow ? (
-          <Loader2 className="size-4 animate-spin" />
+          <Loader2 className="size-4 animate-spin stroke-[2.5]" />
         ) : (
           <>
-            <span className="text-sm font-medium">{t("buyWithShop")}</span>
-            <ShopLogo className="h-4 w-auto" />
+            <span className="text-xs font-black uppercase tracking-widest">{t("buyWithShop")}</span>
+            <ShopLogo className="h-3.5 w-auto fill-current text-white" />
           </>
         )}
       </button>
@@ -125,7 +121,7 @@ export function BuyButtons({
         type="button"
         disabled={isOutOfStock || requiresBundleConfiguration}
         onClick={handleAddToCart}
-        className="flex-1 justify-center h-12"
+        className="flex-1 justify-center h-14 rounded-none bg-black text-white hover:bg-neutral-800 disabled:bg-neutral-100 disabled:text-neutral-400 border border-transparent font-black text-xs uppercase tracking-widest active:scale-[0.99]"
       >
         {getButtonText()}
       </Button>

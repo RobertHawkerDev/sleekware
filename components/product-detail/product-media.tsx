@@ -44,7 +44,7 @@ function MediaImage({
       src={item.image.url}
       alt={item.image.altText || `${title} image ${idx + 1}`}
       fill
-      className={cn("object-cover", className)}
+      className={cn("object-cover rounded-none", className)}
       sizes={sizes}
       priority={priority}
       loading={priority || eager ? "eager" : "lazy"}
@@ -77,12 +77,11 @@ function MediaVideo({
       }
       sizes={sizes}
       priorityImage={priority}
-      className={cn("h-full w-full scale-[1.04] object-cover", className)}
+      className={cn("h-full w-full scale-[1.04] object-cover rounded-none", className)}
     />
   );
 }
 
-/** Snap-scroll carousel for mobile viewports. */
 function Carousel({
   mediaItems,
   title,
@@ -100,7 +99,6 @@ function Carousel({
   const prevMediaRef = useRef<string>("");
   const t = useTranslations("product");
 
-  // Reset carousel to first item when the filtered media change
   const joinedKey = mediaItems.map(mediaKey).join(",");
   if (prevMediaRef.current && prevMediaRef.current !== joinedKey) {
     scrollContainerRef.current?.scrollTo({ left: 0 });
@@ -122,7 +120,6 @@ function Carousel({
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    // Variant/video items arrive via slot children, so count the rendered DOM, not just mediaItems.
     const sync = () => {
       const width = container.offsetWidth;
       if (width === 0) return;
@@ -148,10 +145,10 @@ function Carousel({
   }, []);
 
   return (
-    <div className="grid gap-5">
+    <div className="space-y-4">
       <div
         ref={scrollContainerRef}
-        className="relative overflow-x-auto flex snap-x snap-mandatory overscroll-x-contain scrollbar-hide -mx-5 w-[calc(100%+2.5rem)]"
+        className="relative overflow-x-auto flex snap-x snap-mandatory overscroll-x-contain scrollbar-hide -mx-4 w-[calc(100%+2rem)] border-b border-neutral-200"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {children}
@@ -161,12 +158,12 @@ function Carousel({
           return (
             <div
               key={mediaKey(item)}
-              className="relative shrink-0 w-full snap-start snap-always overflow-hidden aspect-square"
+              className="relative shrink-0 w-full snap-start snap-always overflow-hidden aspect-square bg-neutral-50"
             >
               {item.type === "video" ? (
                 <MediaVideo item={item} sizes="100vw" priority={priority || eager} />
               ) : item.type === "placeholder" ? (
-                <ImagePlaceholder className="size-full" />
+                <ImagePlaceholder className="size-full border-0 rounded-none" />
               ) : (
                 <MediaImage
                   item={item}
@@ -182,18 +179,16 @@ function Carousel({
         })}
       </div>
 
-      {/* Dot indicators – reserve space but hide when there's only one image */}
-      <div className={cn("flex justify-center gap-2", itemCount <= 1 && "invisible")}>
+      {/* Industrial Rectangle Segment Bar Indicators */}
+      <div className={cn("flex justify-center gap-1", itemCount <= 1 && "invisible")}>
         {Array.from({ length: itemCount }, (_, idx) => (
           <button
             type="button"
             key={idx}
             onClick={() => scrollToImage(idx)}
             className={cn(
-              "h-1.5 rounded-full transition-all",
-              idx === selectedIndex
-                ? "bg-foreground w-8"
-                : "bg-muted-foreground/30 w-1.5 hover:bg-muted-foreground/50",
+              "h-1 rounded-none transition-all cursor-pointer",
+              idx === selectedIndex ? "bg-black w-6" : "bg-neutral-200 w-3 hover:bg-neutral-300",
             )}
             aria-label={t("goToImage", { number: String(idx + 1) })}
           />
@@ -217,7 +212,7 @@ function GridItem({
   eager: boolean;
 }) {
   return (
-    <div className="relative w-full overflow-hidden aspect-square">
+    <div className="relative w-full overflow-hidden aspect-square border border-neutral-200 bg-neutral-50 rounded-none">
       {item.type === "video" ? (
         <MediaVideo
           item={item}
@@ -225,7 +220,7 @@ function GridItem({
           priority={priority || eager}
         />
       ) : item.type === "placeholder" ? (
-        <ImagePlaceholder className="size-full" />
+        <ImagePlaceholder className="size-full rounded-none border-0" />
       ) : (
         <LightboxTrigger item={item}>
           <MediaImage
@@ -242,7 +237,6 @@ function GridItem({
   );
 }
 
-/** 2-column grid with lightbox for desktop viewports. */
 function Grid({
   mediaItems,
   title,
@@ -257,7 +251,7 @@ function Grid({
   children?: React.ReactNode;
 }) {
   const grid = (
-    <div className="grid grid-cols-2 gap-2.5">
+    <div className="grid grid-cols-2 gap-4">
       {children}
       {mediaItems.map((item, idx) => {
         const priority = !hasColorSlot && idx === 0;
@@ -278,10 +272,6 @@ function Grid({
   return interactive ? <Lightbox label={title}>{grid}</Lightbox> : grid;
 }
 
-/**
- * Renders color-specific images as grid items (desktop).
- * Designed to be used inside a Suspense boundary as children of ProductMedia.
- */
 export function ColorImageGrid({ images, title }: { images: ImageType[]; title: string }) {
   return images.map((image, idx) => (
     <GridItem
@@ -295,10 +285,6 @@ export function ColorImageGrid({ images, title }: { images: ImageType[]; title: 
   ));
 }
 
-/**
- * Renders color-specific images as carousel items (mobile).
- * Matches the Carousel item structure for consistent snap-scroll behavior.
- */
 export function ColorImageCarouselItems({ images, title }: { images: ImageType[]; title: string }) {
   return images.map((image, idx) => {
     const priority = idx === 0;
@@ -306,13 +292,13 @@ export function ColorImageCarouselItems({ images, title }: { images: ImageType[]
     return (
       <div
         key={image.url}
-        className="relative shrink-0 w-full snap-start snap-always overflow-hidden aspect-square"
+        className="relative shrink-0 w-full snap-start snap-always overflow-hidden aspect-square bg-neutral-50"
       >
         <Image
           src={image.url}
           alt={image.altText || `${title} image ${idx + 1}`}
           fill
-          className="object-cover"
+          className="object-cover rounded-none"
           sizes="100vw"
           priority={priority}
           loading={priority || eager ? "eager" : "lazy"}
@@ -324,18 +310,18 @@ export function ColorImageCarouselItems({ images, title }: { images: ImageType[]
 }
 
 export function ProductMediaSkeleton({ className }: { className?: string }) {
-  const tile = "aspect-square w-full animate-pulse";
+  const tile =
+    "aspect-square w-full animate-pulse bg-neutral-100 rounded-none border border-neutral-200";
   return (
     <div className={className}>
-      <div className="grid gap-5 lg:hidden -mx-5">
-        <ImagePlaceholder className={tile} />
-        <div className="h-1.5" />
+      <div className="grid gap-4 lg:hidden -mx-4">
+        <div className={tile} />
       </div>
-      <div className="hidden lg:grid grid-cols-2 gap-2.5">
-        <ImagePlaceholder className={tile} />
-        <ImagePlaceholder className={tile} />
-        <ImagePlaceholder className={tile} />
-        <ImagePlaceholder className={tile} />
+      <div className="hidden lg:grid grid-cols-2 gap-4">
+        <div className={tile} />
+        <div className={tile} />
+        <div className={tile} />
+        <div className={tile} />
       </div>
     </div>
   );
@@ -353,9 +339,7 @@ export function ProductMedia({
   videos: Video[];
   title: string;
   className?: string;
-  /** Color images rendered as grid items (desktop). */
   desktopSlot?: React.ReactNode;
-  /** Color images rendered as carousel items (mobile). */
   mobileSlot?: React.ReactNode;
 }) {
   const sharedMediaItems: MediaItem[] = [

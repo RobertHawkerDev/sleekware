@@ -11,7 +11,10 @@ export function AboutItem({ descriptionHtml, className, ...props }: AboutItemPro
 
   return (
     <div
-      className={cn("prose prose-sm text-foreground/80", className)}
+      className={cn(
+        "prose prose-sm max-w-none text-neutral-600 uppercase tracking-wide text-[11px] leading-relaxed prose-p:mb-3 prose-strong:font-black prose-strong:text-black",
+        className,
+      )}
       dangerouslySetInnerHTML={{ __html: descriptionHtml }}
       {...props}
     />

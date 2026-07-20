@@ -10,13 +10,13 @@ const RECOMMENDATION_LIMIT = 4;
 
 export function RelatedProductsSectionSkeleton({ title }: { title?: string }) {
   return (
-    <div className="grid gap-4">
+    <div className="space-y-8">
       {title ? (
-        <h2 className="text-2xl sm:text-3xl font-medium tracking-tight">{title}</h2>
+        <h2 className="text-sm font-black uppercase tracking-widest text-black">{title}</h2>
       ) : (
-        <Skeleton className="h-9 w-48" />
+        <Skeleton className="h-5 w-48 rounded-none" />
       )}
-      <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-6 lg:grid-cols-4">
         {Array.from({ length: RECOMMENDATION_LIMIT }, (_, index) => (
           <ProductCardSkeleton key={index} />
         ))}
@@ -35,9 +35,11 @@ async function Render({ handle, locale }: { handle: string | Promise<string>; lo
   if (related.length === 0) return null;
 
   return (
-    <div className="grid gap-4">
-      <h2 className="text-2xl sm:text-3xl font-medium tracking-tight">{t("recommendations")}</h2>
-      <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
+    <div className="space-y-8">
+      <h2 className="text-sm font-black uppercase tracking-widest text-black">
+        {t("recommendations")}
+      </h2>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-6 lg:grid-cols-4">
         {related.slice(0, RECOMMENDATION_LIMIT).map((product) => (
           <ProductCard
             key={product.id}

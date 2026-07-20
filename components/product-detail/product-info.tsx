@@ -24,7 +24,13 @@ function ProductInfoHeader({
 }: ProductInfoHeaderProps) {
   return (
     <div data-slot="product-info-header" className={className} {...props}>
-      <h1 className={cn("font-semibold text-foreground tracking-tight", "text-3xl")}>{title}</h1>
+      <h1
+        className={cn(
+          "font-black text-black uppercase tracking-wider text-2xl md:text-3xl leading-none",
+        )}
+      >
+        {title}
+      </h1>
 
       {selectedVariant && (
         <ProductPrice
@@ -32,6 +38,7 @@ function ProductInfoHeader({
           currencyCode={selectedVariant.price.currencyCode}
           compareAtAmount={selectedVariant.compareAtPrice?.amount}
           locale={locale}
+          className="mt-2"
         />
       )}
     </div>
@@ -60,7 +67,7 @@ function ProductInfoOptions({
   const isColorOption = (opt: ProductOption) =>
     opt.values.some((v) => v.swatch?.color || v.swatch?.image) ||
     opt.name.toLowerCase().includes("color");
-  // Shopify emits a synthetic Title/Default Title option for products with no variant axes — hide it.
+
   const isShopifyDefaultOption = (opt: ProductOption) =>
     opt.name === "Title" && opt.values.length === 1 && opt.values[0]?.name === "Default Title";
   const isSingleValueOption = (opt: ProductOption) => opt.values.length === 1;
@@ -75,10 +82,13 @@ function ProductInfoOptions({
 
   return (
     <div data-slot="product-info-options" className={className} {...props}>
-      <div className="grid gap-5">
+      <div className="space-y-6">
         {singleValueOptions.map((option) => (
-          <p key={option.id} className="text-sm font-medium text-foreground/70">
-            {option.name}: <span className="text-foreground">{option.values[0]?.name}</span>
+          <p
+            key={option.id}
+            className="text-[11px] font-black uppercase tracking-widest text-neutral-400"
+          >
+            {option.name}: <span className="text-black ml-1">{option.values[0]?.name}</span>
           </p>
         ))}
 

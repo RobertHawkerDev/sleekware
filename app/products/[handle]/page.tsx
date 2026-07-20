@@ -5,7 +5,6 @@ import { ProductDetailSection } from "@/components/product-detail/product-detail
 import { RelatedProductsSection } from "@/components/product/related-products-section";
 import { Container } from "@/components/ui/container";
 import { Page } from "@/components/ui/page";
-import { Sections } from "@/components/ui/sections";
 import { getLocale } from "@/lib/params";
 import {
   defaultSelectedOptions,
@@ -22,6 +21,12 @@ import {
 import type { ProductVariant } from "@/lib/types";
 
 const PLACEHOLDER_HANDLE = "__placeholder__";
+
+// Helper type for Next.js 15+ Page Component parameters
+interface PageProps<T extends string> {
+  params: Promise<{ handle: string; locale: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
 
 async function buildProductMetadata(
   handle: string,
@@ -92,15 +97,11 @@ export default async function ProductPage({
   const product = await getProduct({ handle, locale });
   if (!product) notFound();
 
-  // Keep searchParams unawaited so only the variant-dependent UI streams. The
-  // picker highlight and color image depend only on searchParams (fast), so they
-  // ride a separate promise from the per-selection variant query (the network
-  // round-trip that price + add-to-cart need) — otherwise the picker would wait
-  // on the network and the selected option would visibly snap in after load.
   const selectedOptionsPromise: Promise<SelectedOptions> = searchParams.then((sp) => ({
     ...defaultSelectedOptions(product),
     ...parseSelectedOptions(product.options, sp ?? {}),
   }));
+
   const variantPromise: Promise<ProductVariant | undefined> = searchParams.then(async (sp) => {
     const fromUrl = parseSelectedOptions(product.options, sp ?? {});
     if (Object.keys(fromUrl).length === 0) return product.defaultVariant;
@@ -112,17 +113,19 @@ export default async function ProductPage({
   });
 
   return (
-    <Page className="pt-0">
-      <Container className="bg-background">
-        <Sections>
+    <Page className="py-8 md:py-12">
+      <Container className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="space-y-16 md:space-y-24">
           <ProductDetailSection
             product={product}
             selectedOptionsPromise={selectedOptionsPromise}
             variantPromise={variantPromise}
             locale={locale}
           />
-          <RelatedProductsSection handle={handle} locale={locale} />
-        </Sections>
+          <div className="border-t border-neutral-200 pt-16">
+            <RelatedProductsSection handle={handle} locale={locale} />
+          </div>
+        </div>
       </Container>
     </Page>
   );

@@ -37,8 +37,6 @@ interface BundleParentsProps {
 }
 
 export function BundleParents({ title, variants }: BundleParentsProps) {
-  // A component variant is grouped into many bundle variant combinations that all
-  // belong to the same bundle product — collapse to one link per bundle product.
   const byProduct = new Map<string, ProductVariantReference>();
   for (const variant of variants) {
     if (!byProduct.has(variant.product.handle)) byProduct.set(variant.product.handle, variant);
@@ -62,29 +60,35 @@ interface BundleProductListProps {
 
 function BundleProductList({ items, title }: BundleProductListProps) {
   return (
-    <div className="grid gap-2.5" data-slot="bundle-components">
-      <h2 className="font-medium text-foreground/70 text-sm">{title}</h2>
-      <ul className="grid gap-2.5">
+    <div className="space-y-3" data-slot="bundle-components">
+      <h2 className="text-[10px] font-black uppercase tracking-widest text-neutral-400">{title}</h2>
+      <ul className="divide-y divide-neutral-200 border border-neutral-200 rounded-none bg-white">
         {items.map((item) => (
           <li key={item.key}>
             <Link
               href={item.href}
-              className="flex cursor-pointer items-center gap-2.5 rounded-lg border border-border p-2.5 transition-colors hover:border-foreground/30"
+              className="flex cursor-pointer items-center gap-3 p-3 transition-colors hover:bg-neutral-50"
             >
               {item.image ? (
-                <Image
-                  src={item.image.url}
-                  alt={item.image.altText || item.title}
-                  width={48}
-                  height={48}
-                  className="size-12 rounded-md object-cover"
-                />
+                <div className="relative size-10 shrink-0 border border-neutral-200 rounded-none overflow-hidden bg-neutral-100">
+                  <Image
+                    src={item.image.url}
+                    alt={item.image.altText || item.title}
+                    fill
+                    className="object-cover object-center"
+                    sizes="40px"
+                  />
+                </div>
               ) : (
-                <ImagePlaceholder className="size-12 shrink-0 rounded-md" />
+                <ImagePlaceholder className="size-10 shrink-0 border border-neutral-200 rounded-none" />
               )}
-              <span className="min-w-0 flex-1 truncate font-medium text-sm">{item.title}</span>
+              <span className="min-w-0 flex-1 truncate font-black text-xs uppercase tracking-wider text-black">
+                {item.title}
+              </span>
               {item.quantity && item.quantity > 1 ? (
-                <span className="text-foreground/50 text-sm">×{item.quantity}</span>
+                <span className="font-black text-neutral-400 text-xs tabular-nums">
+                  ×{item.quantity}
+                </span>
               ) : null}
             </Link>
           </li>

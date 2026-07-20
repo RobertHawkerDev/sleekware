@@ -23,9 +23,9 @@ export function Lightbox({ label, children }: { label: string; children: ReactNo
 
       <DialogPrimitive.Root open={activeItem !== null} onOpenChange={(open) => !open && close()}>
         <DialogPrimitive.Portal>
-          <DialogPrimitive.Overlay className="fixed inset-0 z-60 bg-black/30 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+          <DialogPrimitive.Overlay className="fixed inset-0 z-60 bg-white/90 backdrop-blur-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
           <DialogPrimitive.Content
-            className="fixed inset-0 z-60 flex items-center justify-center p-10 outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+            className="fixed inset-0 z-60 flex items-center justify-center p-6 md:p-12 outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
             aria-describedby={undefined}
             onClick={(e) => {
               if (e.target === e.currentTarget) close();
@@ -33,8 +33,8 @@ export function Lightbox({ label, children }: { label: string; children: ReactNo
           >
             <DialogPrimitive.Title className="sr-only">{`${label} enlarged`}</DialogPrimitive.Title>
 
-            <DialogPrimitive.Close className="pointer-events-auto absolute top-4 right-4 z-10 rounded-full bg-black/50 p-2 text-white transition-opacity hover:opacity-80 focus:ring-2 focus:ring-white focus:outline-hidden">
-              <XIcon className="size-5" />
+            <DialogPrimitive.Close className="pointer-events-auto absolute top-6 right-6 z-10 rounded-none border border-black bg-white p-2.5 text-black hover:bg-neutral-50 active:scale-95 transition-all focus:outline-none">
+              <XIcon className="size-4 stroke-[2.5]" />
               <span className="sr-only">Close</span>
             </DialogPrimitive.Close>
 
@@ -44,7 +44,7 @@ export function Lightbox({ label, children }: { label: string; children: ReactNo
                   src={activeItem.image.url}
                   alt={activeItem.image.altText || `${label} enlarged`}
                   fill
-                  className="object-contain"
+                  className="object-contain rounded-none"
                   sizes="90vw"
                   priority
                 />
@@ -65,7 +65,7 @@ export function Lightbox({ label, children }: { label: string; children: ReactNo
                   }
                   sizes="90vw"
                   priorityImage
-                  className="pointer-events-auto max-h-full max-w-full object-contain"
+                  className="pointer-events-auto max-h-full max-w-full object-contain rounded-none"
                 />
               </div>
             )}
@@ -82,7 +82,7 @@ export function LightboxTrigger({ item, children }: { item: MediaItem; children:
     <button
       type="button"
       onClick={() => open?.(item)}
-      className="relative h-full w-full cursor-zoom-in"
+      className="relative h-full w-full cursor-zoom-in block outline-none"
     >
       {children}
     </button>
