@@ -4,22 +4,19 @@ import { Sections } from "@/components/ui/sections";
 
 export function ItemsSkeleton() {
   return (
-    <div className="space-y-5">
+    <div className="border border-neutral-200 bg-white divide-y divide-neutral-100">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="border border-border p-5 lg:p-5 animate-pulse">
-          <div className="flex gap-5 lg:gap-5">
-            <div className="w-20 lg:w-24 h-20 lg:h-24 bg-accent rounded-md shrink-0" />
+        <div key={i} className="p-4 sm:p-5 flex gap-4 animate-pulse">
+          <div className="w-16 h-16 bg-neutral-100 rounded-none shrink-0 border border-neutral-100" />
 
-            <div className="flex-1 min-w-0">
-              <div className="h-4 bg-accent rounded w-3/4 mb-3" />
-              <div className="h-3 bg-accent rounded w-1/2 mb-4" />
-              <div className="h-4 bg-accent rounded w-1/4" />
-            </div>
+          <div className="flex-1 min-w-0 space-y-2">
+            <div className="h-3.5 bg-neutral-200 rounded-none w-2/3" />
+            <div className="h-3 bg-neutral-100 rounded-none w-1/3" />
+            <div className="h-6 bg-neutral-50 rounded-none w-20 mt-2" />
+          </div>
 
-            <div className="flex flex-col items-end gap-2">
-              <div className="h-8 bg-accent rounded w-20" />
-              <div className="h-4 bg-accent rounded w-8" />
-            </div>
+          <div className="flex flex-col items-end shrink-0">
+            <div className="h-4 bg-neutral-200 rounded-none w-14" />
           </div>
         </div>
       ))}
@@ -29,27 +26,21 @@ export function ItemsSkeleton() {
 
 export function SummarySkeleton() {
   return (
-    <div className="border border-border p-5 animate-pulse sticky top-10">
-      <div className="space-y-2.5 mb-6 pb-5 border-b border-border">
-        {[1, 2].map((i) => (
-          <div key={i} className="flex justify-between">
-            <div className="h-3 bg-accent rounded w-1/3" />
-            <div className="h-3 bg-accent rounded w-1/4" />
-          </div>
-        ))}
+    <div className="border border-neutral-200 p-5 bg-neutral-50/50 animate-pulse space-y-5">
+      <div className="flex gap-2">
+        <div className="h-11 bg-neutral-100 rounded-none flex-1" />
+        <div className="h-11 bg-neutral-200 rounded-none w-20" />
       </div>
 
-      <div className="flex justify-between mb-6">
-        <div className="h-4 bg-accent rounded w-1/4" />
-        <div className="h-4 bg-accent rounded w-1/4" />
+      <div className="border-t border-neutral-200 pt-4 space-y-3">
+        <div className="flex justify-between">
+          <div className="h-3.5 bg-neutral-100 rounded-none w-1/3" />
+          <div className="h-4 bg-neutral-200 rounded-none w-1/4" />
+        </div>
+        <div className="h-3 bg-neutral-100 rounded-none w-1/2" />
       </div>
 
-      <div className="h-12 bg-accent rounded w-full" />
-
-      <div className="mt-6 pt-5 border-t border-border">
-        <div className="h-4 bg-accent rounded w-1/2 mb-3" />
-        <div className="h-32 bg-accent rounded" />
-      </div>
+      <div className="h-14 bg-neutral-200 rounded-none w-full" />
     </div>
   );
 }
@@ -59,7 +50,7 @@ export function PageSkeleton() {
     <Page>
       <Container>
         <Sections>
-          <div className="h-5 bg-accent rounded w-32 animate-pulse" />
+          <div className="h-8 bg-neutral-200 rounded-none w-48 animate-pulse border-b border-neutral-100 pb-5" />
           <div className="grid gap-5 lg:grid-cols-12">
             <div className="lg:col-span-8 xl:col-span-9">
               <ItemsSkeleton />

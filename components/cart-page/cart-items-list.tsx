@@ -3,7 +3,8 @@
 import { useTranslations } from "next-intl";
 
 import { useCartRender } from "@/components/cart/context-sync";
-import { OverlayItem } from "@/components/cart/overlay-item";
+
+import { CartPageItem } from "./cart-page-item";
 
 interface CartItemsListProps {
   locale: string;
@@ -15,13 +16,16 @@ export function CartItemsList({ locale }: CartItemsListProps) {
   const lines = cart?.lines ?? [];
 
   return lines.length === 0 ? (
-    <div className="text-center py-10">
-      <p className="text-muted-foreground">{t("empty")}</p>
+    <div className="text-center py-20 border border-neutral-200 bg-neutral-50 rounded-none">
+      <p className="text-xs font-black uppercase tracking-widest text-neutral-400">{t("empty")}</p>
     </div>
   ) : (
-    <ul className="space-y-5" aria-label={t("cartItemsLabel")}>
+    <ul
+      className="flex flex-col border border-neutral-200 bg-white rounded-none"
+      aria-label={t("cartItemsLabel")}
+    >
       {lines.map((item) => (
-        <OverlayItem key={item.id} item={item} locale={locale} />
+        <CartPageItem key={item.id} item={item} locale={locale} />
       ))}
     </ul>
   );

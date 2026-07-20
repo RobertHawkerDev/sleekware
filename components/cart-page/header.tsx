@@ -10,13 +10,13 @@ export function Header() {
   const count = cart?.totalQuantity ?? 0;
 
   return (
-    <div className="flex items-center gap-2.5">
-      <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-display">
+    <div className="flex items-baseline gap-3 border-b border-neutral-100 pb-5 md:pb-6">
+      <h1 className="text-2xl sm:text-4xl xl:text-5xl font-black uppercase tracking-tighter text-black leading-none">
         {t("shoppingCart")}
       </h1>
       {count > 0 && (
-        <span className="flex size-7 items-center justify-center rounded-full bg-foreground text-sm text-background">
-          {count}
+        <span className="text-sm sm:text-lg font-black tracking-tight text-neutral-400 tabular-nums">
+          ({count})
         </span>
       )}
     </div>
